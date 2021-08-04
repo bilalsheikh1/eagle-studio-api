@@ -30,6 +30,9 @@ Route::post('/login', [AuthController::class, 'login']);
         return auth()->user();
     });
 
+//    Route::get('/active-user',[\App\Http\Controllers\UserController::class,'getActiveUser']);
+//    Route::get('/deactive-user',[\App\Http\Controllers\UserController::class,'getDeactiveUser']);
+    Route::resource('/user', \App\Http\Controllers\UserController::class);
     Route::get('/pending-user', [\App\Http\Controllers\WebUserController::class,'pendingUser']);
     Route::get('/active-user', [\App\Http\Controllers\WebUserController::class,'activeUser']);
     Route::get('/discard-user', [\App\Http\Controllers\WebUserController::class,'discardUser']);
