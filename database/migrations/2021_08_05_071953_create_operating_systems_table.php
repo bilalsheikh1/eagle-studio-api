@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateImagesVideosTable extends Migration
+class CreateOperatingSystemsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateImagesVideosTable extends Migration
      */
     public function up()
     {
-        Schema::create('images_videos', function (Blueprint $table) {
+        Schema::create('operating_systems', function (Blueprint $table) {
             $table->id();
-            $table->string("src");
-            $table->unsignedBigInteger("product_id");
-            $table->foreign("product_id")->references('id')->on('products');
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ class CreateImagesVideosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('images_videos');
+        Schema::dropIfExists('operating_systems');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProductPlatformsTable extends Migration
+class CreateProductRatingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class CreateProductPlatformsTable extends Migration
      */
     public function up()
     {
-        Schema::create('product_platforms', function (Blueprint $table) {
+        Schema::create('product_ratings', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->unsignedBigInteger('rating');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('product_id');
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ class CreateProductPlatformsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_platforms');
+        Schema::dropIfExists('product_ratings');
     }
 }

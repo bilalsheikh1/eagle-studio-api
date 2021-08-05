@@ -5,12 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ImagesVideo extends Model
+class File extends Model
 {
     use HasFactory;
-
-    public function productCategory()
-    {
-        return $this->belongsTo(ProductCategory::class);
-    }
 }

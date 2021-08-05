@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProductPlatform;
+use App\Models\Purchase;
 use Illuminate\Http\Request;
 
-class ProductPlatformController extends Controller
+class PurchaseController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,10 +41,10 @@ class ProductPlatformController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\ProductPlatform  $productPlatform
+     * @param  \App\Models\Purchase  $purchase
      * @return \Illuminate\Http\Response
      */
-    public function show(ProductPlatform $productPlatform)
+    public function show(Purchase $purchase)
     {
         //
     }
@@ -52,10 +52,10 @@ class ProductPlatformController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\ProductPlatform  $productPlatform
+     * @param  \App\Models\Purchase  $purchase
      * @return \Illuminate\Http\Response
      */
-    public function edit(ProductPlatform $productPlatform)
+    public function edit(Purchase $purchase)
     {
         //
     }
@@ -64,10 +64,10 @@ class ProductPlatformController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\ProductPlatform  $productPlatform
+     * @param  \App\Models\Purchase  $purchase
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ProductPlatform $productPlatform)
+    public function update(Request $request, Purchase $purchase)
     {
         //
     }
@@ -75,10 +75,10 @@ class ProductPlatformController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\ProductPlatform  $productPlatform
+     * @param  \App\Models\Purchase  $purchase
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ProductPlatform $productPlatform)
+    public function destroy(Purchase $purchase)
     {
         //
     }

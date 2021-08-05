@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ImagesVideo;
+use App\Models\Wishlist;
 use Illuminate\Http\Request;
 
-class ImagesVideoController extends Controller
+class WishlistController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,10 +41,10 @@ class ImagesVideoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\ImagesVideo  $imagesVideo
+     * @param  \App\Models\Wishlist  $wishlist
      * @return \Illuminate\Http\Response
      */
-    public function show(ImagesVideo $imagesVideo)
+    public function show(Wishlist $wishlist)
     {
         //
     }
@@ -52,10 +52,10 @@ class ImagesVideoController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\ImagesVideo  $imagesVideo
+     * @param  \App\Models\Wishlist  $wishlist
      * @return \Illuminate\Http\Response
      */
-    public function edit(ImagesVideo $imagesVideo)
+    public function edit(Wishlist $wishlist)
     {
         //
     }
@@ -64,10 +64,10 @@ class ImagesVideoController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\ImagesVideo  $imagesVideo
+     * @param  \App\Models\Wishlist  $wishlist
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ImagesVideo $imagesVideo)
+    public function update(Request $request, Wishlist $wishlist)
     {
         //
     }
@@ -75,10 +75,10 @@ class ImagesVideoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\ImagesVideo  $imagesVideo
+     * @param  \App\Models\Wishlist  $wishlist
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ImagesVideo $imagesVideo)
+    public function destroy(Wishlist $wishlist)
     {
         //
     }

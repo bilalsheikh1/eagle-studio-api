@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatTableProductOperatingSystem extends Migration
+class CreateFilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreatTableProductOperatingSystem extends Migration
      */
     public function up()
     {
-        Schema::create('products_operating_system', function (Blueprint $table) {
+        Schema::create('files', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->integer('product_id');
-            $table->integer('operating_system_id');
+            $table->string('name');
+            $table->string('path');
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')->references('id')->on('products');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ class CreatTableProductOperatingSystem extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('files');
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ProductCategoryController;
+use App\Http\Controllers\ProductTemplateController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\AuthController;
@@ -15,28 +17,8 @@ use \App\Http\Controllers\AuthController;
 */
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//
-//    //Logout
-//    Route::post('/logout', [AuthController::class, 'logout']);
-//
-//
-////    return $request->user();
-//});
-
-//Route::middleware('auth:sanctum')->group(function (){
-    Route::get('/user', function (){
-        return auth()->user();
-    });
-
-//    Route::get('/active-user',[\App\Http\Controllers\UserController::class,'getActiveUser']);
-//    Route::get('/deactive-user',[\App\Http\Controllers\UserController::class,'getDeactiveUser']);
-    Route::resource('/user', \App\Http\Controllers\UserController::class);
-    Route::get('/pending-user', [\App\Http\Controllers\WebUserController::class,'pendingUser']);
-    Route::get('/active-user', [\App\Http\Controllers\WebUserController::class,'activeUser']);
-    Route::get('/discard-user', [\App\Http\Controllers\WebUserController::class,'discardUser']);
-    Route::patch('/update-status/{webUser}', [\App\Http\Controllers\WebUserController::class, 'updateStatus']);
-    Route::resource("/framework", \App\Http\Controllers\FrameworkController::class);
-//});
+Route::resource('product_template', ProductTemplateController::class);
+Route::resource('product_category', ProductCategoryController::class);
 

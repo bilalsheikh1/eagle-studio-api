@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Framework;
+use App\Models\ProductView;
 use Illuminate\Http\Request;
 
-class FrameworkController extends Controller
+class ProductViewController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,10 +41,10 @@ class FrameworkController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Framework  $framework
+     * @param  \App\Models\ProductView  $productView
      * @return \Illuminate\Http\Response
      */
-    public function show(Framework $framework)
+    public function show(ProductView $productView)
     {
         //
     }
@@ -52,10 +52,10 @@ class FrameworkController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Framework  $framework
+     * @param  \App\Models\ProductView  $productView
      * @return \Illuminate\Http\Response
      */
-    public function edit(Framework $framework)
+    public function edit(ProductView $productView)
     {
         //
     }
@@ -64,10 +64,10 @@ class FrameworkController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Framework  $framework
+     * @param  \App\Models\ProductView  $productView
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Framework $framework)
+    public function update(Request $request, ProductView $productView)
     {
         //
     }
@@ -75,10 +75,10 @@ class FrameworkController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Framework  $framework
+     * @param  \App\Models\ProductView  $productView
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Framework $framework)
+    public function destroy(ProductView $productView)
     {
         //
     }

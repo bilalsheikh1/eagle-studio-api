@@ -10,27 +10,33 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
 
-    public function login(Request $request)
+    public function login(Request $request): \Illuminate\Http\JsonResponse
     {
-        if (!Auth::attempt($request->only('username', 'password'))) {
+        try {
+            if (!Auth::attempt($request->only('username', 'password'))) {
+                return response()->json('Invalid login details', 401);
+            }
+
+            $token = $request->user()->createToken('auth_token')->plainTextToken;
+
             return response()->json([
-                'message' => 'Invalid login details'
-            ], 401);
+                'token' => $token,
+                'token_type' => 'Bearer',
+                'user' => $request->user()
+            ]);
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
         }
-
-        $token = auth()->user()->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'token' => $token,
-            'token_type' => 'Bearer',
-            'user' => auth()->user()
-        ]);
     }
 
-    public function logout()
+    public function logout(Request $request): \Illuminate\Http\JsonResponse
     {
-        auth()->user()->tokens()->delete();
-        return response()->json("logout successfully");
+        try {
+            $request->user()->tokens()->delete();
+            return response()->json("User logout successfully.");
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 }
 

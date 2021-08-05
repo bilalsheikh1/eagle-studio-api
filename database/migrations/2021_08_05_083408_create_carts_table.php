@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOperatingSystemsTable extends Migration
+class CreateCartsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class CreateOperatingSystemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('operating_systems', function (Blueprint $table) {
+        Schema::create('carts', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ class CreateOperatingSystemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('operating_systems');
+        Schema::dropIfExists('carts');
     }
 }
