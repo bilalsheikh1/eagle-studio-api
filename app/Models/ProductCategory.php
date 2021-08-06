@@ -8,9 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class ProductCategory extends Model
 {
     use HasFactory;
+    protected $fillable = ['name'];
 
-    public function product()
-    {
-        return $this->hasMany(Product::class);
-    }
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s A',
+        'updated_at' => 'datetime:Y-m-d H:i:s A',
+    ];
 }

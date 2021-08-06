@@ -4,60 +4,41 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ProductCategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(): \Illuminate\Http\JsonResponse
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        try {
+            return response()->json(ProductCategory::query()->get());
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\ProductCategory  $productCategory
-     * @return \Illuminate\Http\Response
-     */
-    public function show(ProductCategory $productCategory)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\ProductCategory  $productCategory
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(ProductCategory $productCategory)
-    {
-        //
+        try {
+            $request->validate([
+                'name' => ['required', 'string', 'unique:product_categories,name']
+            ]);
+            $product_category = ProductCategory::query()->create($request->all());
+            return response()->json("Product category has been created.");
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 
     /**
@@ -65,21 +46,35 @@ class ProductCategoryController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\ProductCategory  $productCategory
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, ProductCategory $productCategory)
+    public function update(Request $request, ProductCategory $productCategory): \Illuminate\Http\JsonResponse
     {
-        //
+        try {
+            $request->validate([
+                'name' => ['required', 'string', Rule::unique('product_categories', 'name')->ignoreModel($productCategory)]
+            ]);
+            $productCategory->update($request->all());
+            $productCategory->save();
+            return response()->json("Product category has been updated.");
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\ProductCategory  $productCategory
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(ProductCategory $productCategory)
+    public function destroy(ProductCategory $productCategory): \Illuminate\Http\JsonResponse
     {
-        //
+        try {
+            $productCategory->delete();
+            return response()->json("Product template has been deleted.");
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 }
