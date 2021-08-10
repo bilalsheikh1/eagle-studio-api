@@ -15,17 +15,19 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
             $table->boolean('status')->default(false);
-            $table->string('title');
+            $table->string('title')->unique();
             $table->text('description');
             $table->text('features');
-            $table->string('youtube_link')->default('');
-            $table->string('google_play_link')->default('');
-            $table->string('app_store_link')->default('');
+            $table->string('youtube_link')->nullable();
+            $table->string('google_play_link')->nullable();
+            $table->string('app_store_link')->nullable();
             $table->string('single_app_license');
             $table->string('multi_app_license');
-            $table->string('development_hours')->default('');
+            $table->string('development_hours')->nullable();
+            $table->string('featured_image');
+            $table->string('thumbnail_image');
+            $table->string('file');
             $table->unsignedBigInteger('product_template_id');
             $table->unsignedBigInteger('product_category_id');
             $table->unsignedBigInteger('product_subcategory_id');

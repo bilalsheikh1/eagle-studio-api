@@ -17,6 +17,8 @@ class CreateScreenshotsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('path');
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')->references('id')->on('products')->cascadeOnDelete();
             $table->timestamps();
         });
     }

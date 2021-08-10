@@ -16,6 +16,8 @@ class CreateProductSubcategoriesTable extends Migration
         Schema::create('product_subcategories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->unsignedBigInteger('product_template_id');
+            $table->foreign('product_template_id')->references('id')->on('product_templates')->cascadeOnDelete();
             $table->timestamps();
         });
     }

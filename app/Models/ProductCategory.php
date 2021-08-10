@@ -14,4 +14,9 @@ class ProductCategory extends Model
         'created_at' => 'datetime:Y-m-d H:i:s A',
         'updated_at' => 'datetime:Y-m-d H:i:s A',
     ];
+
+    public function operatingSystems(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(OperatingSystem::class);
+    }
 }

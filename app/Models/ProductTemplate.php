@@ -14,4 +14,9 @@ class ProductTemplate extends Model
         'created_at' => 'datetime:Y-m-d H:i:s A',
         'updated_at' => 'datetime:Y-m-d H:i:s A',
     ];
+
+    public function productSubcategories(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ProductSubcategory::class);
+    }
 }

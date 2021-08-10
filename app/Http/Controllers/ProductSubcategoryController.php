@@ -3,61 +3,44 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProductSubcategory;
+use App\Models\ProductTemplate;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ProductSubcategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param ProductTemplate $productTemplate
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(ProductTemplate $productTemplate): \Illuminate\Http\JsonResponse
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        try {
+            return response()->json($productTemplate->productSubcategories()->get());
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(ProductTemplate $productTemplate, Request $request): \Illuminate\Http\JsonResponse
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\ProductSubcategory  $productSubcategory
-     * @return \Illuminate\Http\Response
-     */
-    public function show(ProductSubcategory $productSubcategory)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\ProductSubcategory  $productSubcategory
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(ProductSubcategory $productSubcategory)
-    {
-        //
+        try {
+            $request->validate([
+                'name' => ['required', 'string']
+            ]);
+            $subcategory = $productTemplate->productSubcategories()->create($request->all());
+            return response()->json("Product subcategory has been created.");
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 
     /**
@@ -65,21 +48,35 @@ class ProductSubcategoryController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\ProductSubcategory  $productSubcategory
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, ProductSubcategory $productSubcategory)
+    public function update(ProductTemplate $productTemplate, Request $request, ProductSubcategory $productSubcategory): \Illuminate\Http\JsonResponse
     {
-        //
+        try {
+            $request->validate([
+                'name' => ['required', 'string']
+            ]);
+            $productSubcategory->update($request->all());
+            $productSubcategory->save();
+            return response()->json("Product subcategory has been updated.");
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\ProductSubcategory  $productSubcategory
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(ProductSubcategory $productSubcategory)
+    public function destroy(ProductTemplate $productTemplate, ProductSubcategory $productSubcategory): \Illuminate\Http\JsonResponse
     {
-        //
+        try {
+            $productSubcategory->delete();
+            return response()->json("Product Subcategory has been deleted.");
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 }

@@ -16,6 +16,8 @@ class CreateOperatingSystemsTable extends Migration
         Schema::create('operating_systems', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->unsignedBigInteger('product_category_id');
+            $table->foreign('product_category_id')->references('id')->on('product_categories')->cascadeOnDelete();
             $table->timestamps();
         });
     }

@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\FrameworkController;
+use App\Http\Controllers\OperatingSystemController;
 use App\Http\Controllers\ProductCategoryController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductSubcategoryController;
 use App\Http\Controllers\ProductTemplateController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,4 +25,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 
 Route::resource('product_template', ProductTemplateController::class);
 Route::resource('product_category', ProductCategoryController::class);
+Route::resource('framework', FrameworkController::class);
+Route::resource('product', ProductController::class);
+Route::resource('/{productCategory}/operating_system', OperatingSystemController::class);
+Route::resource('/{productTemplate}/product_subcategory', ProductSubcategoryController::class);
 
