@@ -9,7 +9,7 @@ class Screenshot extends Model
 {
     use HasFactory;
 
-    public function product(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function products(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Product::class);
     }

@@ -3,83 +3,50 @@
 namespace App\Http\Controllers;
 
 use App\Models\FeaturedImage;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class FeaturedImageController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Uploads image to server
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function upload(Product $product, Request $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $request->validate([
+            'file' => ['required', 'dimensions:width=650,height=290']
+        ]);
+        try {
+            $image = new FeaturedImage;
+            $image->name = $request->file('file')->getClientOriginalName();
+            $image->path = $request->file('file')->storeAs('featured_images', $image->name, 'public');
+            $image->url = Storage::disk('public')->url($image->path);
+            $product->featuredImage()->save($image);
+            return response()->json($image);
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Delete featured image from server
+     * @param FeaturedImage $featuredImage
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function create()
+    public function destroy(Product $product, FeaturedImage $featuredImage): \Illuminate\Http\JsonResponse
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\FeaturedImage  $featuredImage
-     * @return \Illuminate\Http\Response
-     */
-    public function show(FeaturedImage $featuredImage)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\FeaturedImage  $featuredImage
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(FeaturedImage $featuredImage)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\FeaturedImage  $featuredImage
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, FeaturedImage $featuredImage)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\FeaturedImage  $featuredImage
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(FeaturedImage $featuredImage)
-    {
-        //
+        try {
+            $res = Storage::disk('public')->delete($featuredImage->path);
+            if($res) {
+                $featuredImage->delete();
+            }
+            return response()->json($res);
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 }

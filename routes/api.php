@@ -1,11 +1,16 @@
 <?php
 
+use App\Http\Controllers\FeaturedImageController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\FrameworkController;
+use App\Http\Controllers\HandleFileController;
 use App\Http\Controllers\OperatingSystemController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductSubcategoryController;
 use App\Http\Controllers\ProductTemplateController;
+use App\Http\Controllers\ScreenshotController;
+use App\Http\Controllers\ThumbnailImageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\AuthController;
@@ -29,4 +34,16 @@ Route::resource('framework', FrameworkController::class);
 Route::resource('product', ProductController::class);
 Route::resource('/{productCategory}/operating_system', OperatingSystemController::class);
 Route::resource('/{productTemplate}/product_subcategory', ProductSubcategoryController::class);
+
+Route::post('/{product}/featuredImage', [FeaturedImageController::class, 'upload']);
+Route::delete('/{product}/featuredImage/{featuredImage}', [FeaturedImageController::class, 'destroy']);
+
+Route::post('/{product}/thumbnailImage', [ThumbnailImageController::class, 'upload']);
+Route::delete('/{product}/thumbnailImage/{thumbnailImage}', [ThumbnailImageController::class, 'destroy']);
+
+Route::post('/{product}/screenshot', [ScreenshotController::class, 'upload']);
+Route::delete('/{product}/screenshot/{screenshot}', [ScreenshotController::class, 'destroy']);
+
+Route::post('/{product}/file', [FileController::class, 'upload']);
+Route::delete('/{product}/file/{file}', [FileController::class, 'destroy']);
 

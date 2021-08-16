@@ -2,84 +2,52 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\ThumbnailImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ThumbnailImageController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Uploads image to server
+     * @param Product $product
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function upload(Product $product, Request $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $request->validate([
+            'file' => ['required', 'dimensions:width=200,height=140']
+        ]);
+        try {
+            $image = new ThumbnailImage();
+            $image->name = $request->file('file')->getClientOriginalName();
+            $image->path = $request->file('file')->storeAs('thumbnail_images', $image->name, 'public');
+            $image->url = Storage::disk('public')->url($image->path);
+            $product->thumbnailImage()->save($image);
+            return response()->json($image);
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Delete thumbnail image from server
+     * @param Product $product
+     * @param ThumbnailImage $thumbnailImage
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function create()
+    public function destroy(Product $product, ThumbnailImage $thumbnailImage): \Illuminate\Http\JsonResponse
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\ThumbnailImage  $thumbnailImage
-     * @return \Illuminate\Http\Response
-     */
-    public function show(ThumbnailImage $thumbnailImage)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\ThumbnailImage  $thumbnailImage
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(ThumbnailImage $thumbnailImage)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\ThumbnailImage  $thumbnailImage
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, ThumbnailImage $thumbnailImage)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\ThumbnailImage  $thumbnailImage
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(ThumbnailImage $thumbnailImage)
-    {
-        //
+        try {
+            $res = Storage::disk('public')->delete($thumbnailImage->path);
+            if($res) {
+                $thumbnailImage->delete();
+            }
+            return response()->json($res);
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 }

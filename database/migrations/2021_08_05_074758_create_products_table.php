@@ -22,20 +22,13 @@ class CreateProductsTable extends Migration
             $table->string('youtube_link')->nullable();
             $table->string('google_play_link')->nullable();
             $table->string('app_store_link')->nullable();
-            $table->string('single_app_license');
-            $table->string('multi_app_license');
+            $table->string('single_app_license')->default(0);
+            $table->string('multi_app_license')->default(0);
             $table->string('development_hours')->nullable();
-            $table->string('featured_image');
-            $table->string('thumbnail_image');
-            $table->string('file');
-            $table->unsignedBigInteger('product_template_id');
-            $table->unsignedBigInteger('product_category_id');
-            $table->unsignedBigInteger('product_subcategory_id');
-            $table->unsignedBigInteger('framework_id')->nullable();
-            $table->foreign('product_template_id')->references('id')->on('product_templates');
-            $table->foreign('product_category_id')->references('id')->on('product_categories');
-            $table->foreign('product_subcategory_id')->references('id')->on('product_subcategories');
-            $table->foreign('framework_id')->references('id')->on('frameworks');
+            $table->foreignId('product_template_id');
+            $table->foreignId('product_category_id');
+            $table->foreignId('product_subcategory_id');
+            $table->foreignId('framework_id')->nullable();
             $table->timestamps();
         });
     }
@@ -47,6 +40,6 @@ class CreateProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('products')->disableForeignKeyConstraints();
     }
 }

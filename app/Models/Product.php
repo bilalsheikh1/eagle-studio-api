@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'description', 'features', 'youtube_link', 'google_play_link', 'app_store_link', 'single_app_license', 'multi_app_license', 'development_hours'];
+    protected $fillable = ['title', 'description', 'features'];
 
     public function productTemplate(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
@@ -38,5 +39,20 @@ class Product extends Model
     public function screenshots(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Screenshot::class);
+    }
+
+    public function featuredImage(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(FeaturedImage::class);
+    }
+
+    public function thumbnailImage(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(ThumbnailImage::class);
+    }
+
+    public function file(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(File::class);
     }
 }
