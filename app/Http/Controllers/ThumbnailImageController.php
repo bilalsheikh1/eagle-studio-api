@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\Storage;
 
 class ThumbnailImageController extends Controller
 {
+
+    public function index(Product $product, Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            return response()->json($product->thumbnailImage);
+        } catch (\Exception $exception){
+            return response()->json($exception->getMessage());
+        }
+    }
+
     /**
      * Uploads image to server
      * @param Product $product
@@ -17,9 +27,9 @@ class ThumbnailImageController extends Controller
      */
     public function upload(Product $product, Request $request): \Illuminate\Http\JsonResponse
     {
-        $request->validate([
-            'file' => ['required', 'dimensions:width=200,height=140']
-        ]);
+//        $request->validate([
+//            'file' => ['required', 'dimensions:width=200,height=140']
+//        ]);
         try {
             $image = new ThumbnailImage();
             $image->name = $request->file('file')->getClientOriginalName();

@@ -4,11 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Screenshot;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ScreenshotController extends Controller
 {
+
+    public function index(Product $product, Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            return response()->json($product->screenshots);
+        } catch (\Exception $exception){
+            return response()->json($exception->getMessage());
+        }
+    }
+
     /**
      * Uploads image to server
      * @param Product $product
@@ -21,12 +32,16 @@ class ScreenshotController extends Controller
             'file' => ['required']
         ]);
         try {
-            $image = new Screenshot();
-            $image->name = $request->file('file')->getClientOriginalName();
-            $image->path = $request->file('file')->storeAs('screenshots', $image->name, 'public');
-            $image->url = Storage::disk('public')->url($image->path);
-            $product->screenshots()->save($image);
-            return response()->json($image);
+            $data=[];
+            foreach ($request->file('file') as $file) {
+                $image = new Screenshot();
+                $image->name = $file->getClientOriginalName();
+                $image->path = $file->storeAs('screenshots', $image->name, 'public');
+                $image->url = Storage::disk('public')->url($image->path);
+                $product->screenshots()->save($image);
+                $data[]=$image;
+            }
+            return response()->json($data);
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 500);
         }

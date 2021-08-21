@@ -59,7 +59,7 @@ class ProductController extends Controller
         try {
             $product = new Product;
             $product->fill($request->all());
-            $product->productTemplate()->associate($request->template_type);
+            $product->productTemplate()->associate($request->product_template);
             $product->framework()->associate($request->framework);
             $product->productCategory()->associate($request->product_category);
             $product->productSubcategory()->associate($request->product_subcategory);
@@ -97,7 +97,7 @@ class ProductController extends Controller
             $request->validate([
                 'single_app_license' => ['required'],
                 'multi_app_license' => ['required'],
-                'development_hours' => ['required', 'numeric'],
+                'develop_hours' => ['required', 'numeric'],
             ]);
         } else {
             $request->validate([
@@ -111,7 +111,7 @@ class ProductController extends Controller
             if($request->step3) {
                 $product->single_app_license = $request->single_app_license;
                 $product->multi_app_license = $request->multi_app_license;
-                $product->development_hours = $request->app_store_link;
+                $product->development_hours = $request->develop_hours;
             } else {
                 $product->youtube_link = $request->youtube_link;
                 $product->google_play_link = $request->google_play_link;

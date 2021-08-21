@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
 {
+
+    public function index(Product $product)
+    {
+        return response()->json($product->file->name.' ('.$product->file->size.' MB)');
+    }
+
     /**
      * Uploads file to server
      * @param Request $request
@@ -16,16 +22,18 @@ class FileController extends Controller
      */
     public function upload(Product $product, Request $request): \Illuminate\Http\JsonResponse
     {
-        $request->validate([
-            'file' => ['required', 'mimes:zip,rar']
-        ]);
+//        $request->validate([
+//            'file' => ['required', 'mimes:zip,rar']
+//        ]);
         try {
             $file = new File();
             $file->name = $request->file('file')->getClientOriginalName();
             $file->path = $request->file('file')->storeAs('files', $file->name);
             $file->url = Storage::url($file->path);
-            $product->thumbnailImage()->save($file);
-            return response()->json($file);
+            $file->size = $request->file('file')->getSize() / 1e+6;
+            $product->file()->delete();
+            $product->file()->save($file);
+            return response()->json($file->name.' ('.$file->size.' MB)');
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 500);
         }

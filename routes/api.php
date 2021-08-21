@@ -35,15 +35,19 @@ Route::resource('product', ProductController::class);
 Route::resource('/{productCategory}/operating_system', OperatingSystemController::class);
 Route::resource('/{productTemplate}/product_subcategory', ProductSubcategoryController::class);
 
+Route::get('/{product}/featuredImage', [FeaturedImageController::class, 'index']);
 Route::post('/{product}/featuredImage', [FeaturedImageController::class, 'upload']);
 Route::delete('/{product}/featuredImage/{featuredImage}', [FeaturedImageController::class, 'destroy']);
 
+Route::get('/{product}/thumbnailImage', [ThumbnailImageController::class, 'index']);
 Route::post('/{product}/thumbnailImage', [ThumbnailImageController::class, 'upload']);
 Route::delete('/{product}/thumbnailImage/{thumbnailImage}', [ThumbnailImageController::class, 'destroy']);
 
+Route::get('/{product}/screenshot', [ScreenshotController::class, 'index']);
 Route::post('/{product}/screenshot', [ScreenshotController::class, 'upload']);
 Route::delete('/{product}/screenshot/{screenshot}', [ScreenshotController::class, 'destroy']);
 
+Route::get('/{product}/file', [FileController::class, 'index']);
 Route::post('/{product}/file', [FileController::class, 'upload']);
 Route::delete('/{product}/file/{file}', [FileController::class, 'destroy']);
 

@@ -9,16 +9,27 @@ use Illuminate\Support\Facades\Storage;
 
 class FeaturedImageController extends Controller
 {
+
+    public function index(Product $product, Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            return response()->json($product->featuredImage);
+        } catch (\Exception $exception){
+            return response()->json($exception->getMessage());
+        }
+    }
+
     /**
      * Uploads image to server
      * @param Request $request
+     * @param Product $product
      * @return \Illuminate\Http\JsonResponse
      */
     public function upload(Product $product, Request $request): \Illuminate\Http\JsonResponse
     {
-        $request->validate([
-            'file' => ['required', 'dimensions:width=650,height=290']
-        ]);
+//        $request->validate([
+//            'file' => ['required', 'dimensions:width=650,height=290']
+//        ]);
         try {
             $image = new FeaturedImage;
             $image->name = $request->file('file')->getClientOriginalName();
