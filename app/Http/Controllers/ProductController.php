@@ -21,7 +21,7 @@ class ProductController extends Controller
     public function index(): \Illuminate\Http\JsonResponse
     {
         try {
-            return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems'])->get());
+            return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->get());
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 500);
         }

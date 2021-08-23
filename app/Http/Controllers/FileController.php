@@ -12,7 +12,9 @@ class FileController extends Controller
 
     public function index(Product $product)
     {
-        return response()->json($product->file->name.' ('.$product->file->size.' MB)');
+        if($product->file != null && $product->file != '')
+            return response()->json($product->file->name.' ('.$product->file->size.' MB)');
+        return response()->json('');
     }
 
     /**
