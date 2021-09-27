@@ -22,8 +22,8 @@ class CreateProductsTable extends Migration
             $table->string('youtube_link')->nullable();
             $table->string('google_play_link')->nullable();
             $table->string('app_store_link')->nullable();
-            $table->string('single_app_license')->default(0);
-            $table->string('multi_app_license')->default(0);
+            $table->double('single_app_license')->default(0);
+            $table->double('multi_app_license')->default(0);
             $table->string('development_hours')->nullable();
             $table->foreignId('product_template_id');
             $table->foreignId('product_category_id');

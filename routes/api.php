@@ -32,8 +32,15 @@ Route::resource('product_template', ProductTemplateController::class);
 Route::resource('product_category', ProductCategoryController::class);
 Route::resource('framework', FrameworkController::class);
 Route::resource('product', ProductController::class);
+
 Route::resource('/{productCategory}/operating_system', OperatingSystemController::class);
 Route::resource('/{productTemplate}/product_subcategory', ProductSubcategoryController::class);
+
+Route::post('/template-product', [ProductController::class, 'getProductByTemplate']);
+Route::post('/sub-category-product', [ProductController::class, 'getProductBySubCategory']);
+Route::post(`getFilteredData`, [ProductController::class,'getFilteredData']);
+
+Route::post('/getFilterProduct',[ProductController::class,'getFilterProduct']);
 
 Route::get('/{product}/featuredImage', [FeaturedImageController::class, 'index']);
 Route::post('/{product}/featuredImage', [FeaturedImageController::class, 'upload']);

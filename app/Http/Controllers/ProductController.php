@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\FeaturedImage;
 use App\Models\File;
 use App\Models\Product;
+use App\Models\ProductSubcategory;
+use App\Models\ProductTemplate;
 use App\Models\Screenshot;
 use App\Models\ThumbnailImage;
 use Illuminate\Http\Request;
@@ -18,14 +20,93 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->get());
+            if($request->urn) {
+                $product = ProductTemplate::query()->where('urn','like','%'. $request->urn .'%')->with(['products', 'products.productTemplate', 'products.thumbnailImage'])->get()->pluck('products');
+                if(count($product) > 0)
+                    return response()->json($product[0]);
+                return response()->json("data not found");            }
+            if($request->status == "draft")
+                return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('status', '0')->get());
+            else if($request->status == "live")
+                return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('status', '=','1')->get());
+            else
+                return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->get());
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 500);
         }
     }
+
+    public function getProductByTemplate(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'urn' => ['required','string']
+        ]);
+        try {
+            $product = ProductTemplate::query()->where('urn','like','%'. $request->urn .'%')->with('productSubcategories')->get()->pluck('productSubcategories');
+            if(count($product) > 0)
+                return response()->json($product[0]);
+            return response()->json("data not found");
+        } catch (\Exception $exception){
+            return response()->json($exception->getMessage(), 500);
+        }
+    }
+
+    public function getFilterProduct(Request $request): \Illuminate\Http\JsonResponse
+    {
+//        $request->validate([
+//            'type' => ['required', 'string']
+//        ]);
+        try {
+            $product = Product::query();
+            $temp ="";
+            foreach ($request->all() as $key => $value){
+                $temp = $value['type'];
+                if($value['type'] == "category"){
+                    $product->whereHas('productCategory', function ($q) use ($value){
+                        $q->where('product_categories.id', $value['id']);
+                    });
+                }
+                if($value['type'] == "subCategory"){
+                    $product->whereHas('productSubcategory', function ($q) use ($value){
+                        $q->where('product_subcategories.id', $value['id']);
+                    });
+                }
+                if($value['type'] == "price"){
+                    $product->whereBetween('single_app_license', $value['price']);
+                }
+            }
+            if($temp == "category" || $temp == "subCategory" || $temp == "price") {
+                $data=$product->with('productCategory')->get();
+                return response()->json($data);
+            }
+            $product = ProductTemplate::query()->where('urn','like','%'. $request->urn .'%')->with(['products', 'products.productTemplate', 'products.thumbnailImage'])->get()->pluck('products');
+            if(count($product) > 0)
+                return response()->json($product[0]);
+            return response()->json("data not found");
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
+    }
+
+    public function getProductBySubCategory(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'urn' => ['required','string']
+        ]);
+        try {
+            $product = ProductTemplate::query()->where('urn','like','%'. $request->urn .'%')->get();
+            if(count($product) > 0)
+                return response()->json("data not found");
+            return response()->json();
+        } catch (\Exception $exception){
+            return response()->json($exception->getMessage(), 500);
+        }
+    }
+
+//    public function
 
     /**
      * Store a newly created resource in storage.
@@ -39,7 +120,7 @@ class ProductController extends Controller
             'title' => ['required', 'string', 'unique:products,title'],
             'product_template' => ['required', 'exists:product_templates,id'],
             'product_category' => ['required', 'exists:product_categories,id'],
-            'product_subcategory' => ['required', 'exists:product_subcategories,id'],
+            'product_subcategory.*' => ['required', 'exists:product_subcategories,id'],
             'operating_systems.*' => ['required', 'exists:operating_systems,id'],
             'framework' => ['required', 'exists:frameworks,id'],
             'description' => ['required'],
@@ -62,8 +143,8 @@ class ProductController extends Controller
             $product->productTemplate()->associate($request->product_template);
             $product->framework()->associate($request->framework);
             $product->productCategory()->associate($request->product_category);
-            $product->productSubcategory()->associate($request->product_subcategory);
             $product->save();
+            $product->productSubcategory()->sync($request->product_subcategory);
             $product->operatingSystems()->sync($request->operating_systems);
             return response()->json($product);
         } catch (\Exception $exception) {
@@ -97,7 +178,7 @@ class ProductController extends Controller
             $request->validate([
                 'single_app_license' => ['required'],
                 'multi_app_license' => ['required'],
-                'develop_hours' => ['required', 'numeric'],
+                'development_hours' => ['required', 'numeric'],
             ]);
         } else {
             $request->validate([
@@ -108,19 +189,52 @@ class ProductController extends Controller
         }
 
         try {
-            if($request->step3) {
-                $product->single_app_license = $request->single_app_license;
-                $product->multi_app_license = $request->multi_app_license;
-                $product->development_hours = $request->develop_hours;
-            } else {
-                $product->youtube_link = $request->youtube_link;
-                $product->google_play_link = $request->google_play_link;
-                $product->app_store_link = $request->app_store_link;
-            }
+//            if($request->step3) {
+//                $product->single_app_license = $request->single_app_license;
+//                $product->multi_app_license = $request->multi_app_license;
+//                $product->development_hours = $request->develop_hours;
+//            } else {
+//                $product->youtube_link = $request->youtube_link;
+//                $product->google_play_link = $request->google_play_link;
+//                $product->app_store_link = $request->app_store_link;
+//            }
+            if($request->product_template)
+                $product->productTemplate()->associate($request->product_template);
+            if($request->framework)
+                $product->framework()->associate($request->framework);
+            if($request->product_category)
+                $product->productCategory()->associate($request->product_category);
+            if($request->product_subcategory)
+                $product->productSubcategory()->sync($request->product_subcategory);
+            if($request->operating_systems)
+                $product->operatingSystems()->sync($request->operating_systems);
+
+            $product->fill($request->all());
             $product->save();
             return response()->json($product);
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 500);
+        }
+    }
+
+    public function getFilteredData(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'Platform', ['nullable'],
+            'Template', ['nullable'],
+            'Subcategory', ['nullable'],
+        ]);
+        try{
+            $product = Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage']);
+            if($request->Platform)
+                $product->where('product_category_id', $request->Platform['id']);
+            if($request->Template)
+                $product->where('product_template_id', $request->Template['id']);
+            if($request->Subcategory)
+                $product->where('product_subcategory_id', $request->Subcategory['id']);
+            return response()->json($product->get());
+        }catch (\Exception $exception){
+            return response()->json($exception->getMessage());
         }
     }
 

@@ -33,6 +33,14 @@ class ScreenshotController extends Controller
         ]);
         try {
             $data=[];
+            if(gettype($request->file('file')) == "object"){
+                $image = new Screenshot();
+                $image->name = $request->file('file')->getClientOriginalName();
+                $image->path = $request->file('file')->storeAs('screenshots', $image->name, 'public');
+                $image->url = Storage::disk('public')->url($image->path);
+                $product->screenshots()->save($image);
+                $data[]=$image;
+            }
             foreach ($request->file('file') as $file) {
                 $image = new Screenshot();
                 $image->name = $file->getClientOriginalName();

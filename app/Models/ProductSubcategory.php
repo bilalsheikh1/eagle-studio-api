@@ -14,8 +14,8 @@ class ProductSubcategory extends Model
         'updated_at' => 'datetime:Y-m-d H:i:s A',
     ];
 
-    public function productTemplate(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function productTemplate(): \Illuminate\Database\Eloquent\Relations\belongsToMany
     {
-        return $this->belongsTo(ProductTemplate::class);
+        return $this->belongsToMany(ProductTemplate::class);
     }
 }

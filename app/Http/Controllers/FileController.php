@@ -35,7 +35,8 @@ class FileController extends Controller
             $file->size = $request->file('file')->getSize() / 1e+6;
             $product->file()->delete();
             $product->file()->save($file);
-            return response()->json($file->name.' ('.$file->size.' MB)');
+//            '('.$file->size.' MB) '. $file->name
+            return response()->json($file);
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 500);
         }

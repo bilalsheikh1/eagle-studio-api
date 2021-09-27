@@ -19,4 +19,9 @@ class ProductTemplate extends Model
     {
         return $this->hasMany(ProductSubcategory::class);
     }
+
+    public function products(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
 }

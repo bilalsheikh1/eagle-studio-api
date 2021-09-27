@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 class Product extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'description', 'features'];
+    protected $fillable = ['title', 'description', 'features','youtube_link','google_play_link','app_store_link','single_app_license','multi_app_license','development_hours'];
 
     public function productTemplate(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
@@ -21,9 +21,9 @@ class Product extends Model
         return $this->belongsTo(ProductCategory::class);
     }
 
-    public function productSubcategory(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function productSubcategory(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsTo(ProductSubcategory::class);
+        return $this->belongsToMany(ProductSubcategory::class);
     }
 
     public function framework(): \Illuminate\Database\Eloquent\Relations\BelongsTo
