@@ -11,6 +11,7 @@ use App\Http\Controllers\ProductSubcategoryController;
 use App\Http\Controllers\ProductTemplateController;
 use App\Http\Controllers\ScreenshotController;
 use App\Http\Controllers\ThumbnailImageController;
+use App\Http\Controllers\CartController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\AuthController;
@@ -41,6 +42,10 @@ Route::post('/sub-category-product', [ProductController::class, 'getProductBySub
 Route::post(`getFilteredData`, [ProductController::class,'getFilteredData']);
 
 Route::post('/getFilterProduct',[ProductController::class,'getFilterProduct']);
+
+// CART
+
+Route::resource('cart',CartController::class);
 
 Route::get('/{product}/featuredImage', [FeaturedImageController::class, 'index']);
 Route::post('/{product}/featuredImage', [FeaturedImageController::class, 'upload']);

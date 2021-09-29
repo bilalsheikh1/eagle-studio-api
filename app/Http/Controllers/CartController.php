@@ -12,9 +12,9 @@ class CartController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return response()->json(Cart::query()->with(['product', 'product.thumbnailImage'])->where('user_id',1)->get());
     }
 
     /**
@@ -35,7 +35,21 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'price' => ['string', 'required'],
+        ]);
+        try{
+            $data = explode("-",$request->price);
+            $cart = new Cart();
+            $cart->type = $data[0];
+            $cart->price = $data[1];
+            $cart->product()->associate($data[2]);
+            $cart->user()->associate(1);
+            $cart->save();
+            return response()->json($cart->with(['product', 'product.thumbnailImage'])->get());
+        } catch (\Exception $exception){
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 
     /**
@@ -80,6 +94,11 @@ class CartController extends Controller
      */
     public function destroy(Cart $cart)
     {
-        //
+        try{
+            $cart->delete();
+            return response()->json($cart->with(['product', 'product.thumbnailImage'])->get());
+        } catch (\Exception $exception){
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 }

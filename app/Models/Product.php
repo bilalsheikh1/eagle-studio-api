@@ -55,4 +55,10 @@ class Product extends Model
     {
         return $this->hasOne(File::class);
     }
+
+//    public function carts(): \Illuminate\Database\Eloquent\Relations\HasMany
+//    {
+//        return $this->hasMany(Cart::class);
+//    }
+
 }
