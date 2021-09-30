@@ -27,7 +27,8 @@ class ProductController extends Controller
                 $product = ProductTemplate::query()->where('urn','like','%'. $request->urn .'%')->with(['products', 'products.productTemplate', 'products.thumbnailImage'])->get()->pluck('products');
                 if(count($product) > 0)
                     return response()->json($product[0]);
-                return response()->json("data not found");            }
+                return response()->json("data not found");
+            }
             if($request->status == "draft")
                 return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('status', '0')->get());
             else if($request->status == "live")
@@ -79,7 +80,7 @@ class ProductController extends Controller
                 }
             }
             if($temp == "category" || $temp == "subCategory" || $temp == "price") {
-                $data=$product->with('productCategory')->get();
+                $data=$product->with(['productCategory', 'thumbnailImage'])->get();
                 return response()->json($data);
             }
             $product = ProductTemplate::query()->where('urn','like','%'. $request->urn .'%')->with(['products', 'products.productTemplate', 'products.thumbnailImage'])->get()->pluck('products');
@@ -149,6 +150,18 @@ class ProductController extends Controller
             return response()->json($product);
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 500);
+        }
+    }
+
+    public function getProductByTitle(Request $request)
+    {
+        $request->validate([
+            'title' => ['string', 'required']
+        ]);
+        try{
+            return response()->json(Product::query()->with(['thumbnailImage', 'productCategory'])->where('title', 'LIKE', '%'. $request->title .'%')->get());
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(),500);
         }
     }
 

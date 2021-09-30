@@ -24,6 +24,11 @@ class ProductSubcategoryController extends Controller
         }
     }
 
+    public function getSubcategories(Request $request):\ Illuminate\Http\JsonResponse
+    {
+        return response()->json(ProductSubcategory::query()->get());
+    }
+
     /**
      * Store a newly created resource in storage.
      *

@@ -37,14 +37,18 @@ Route::resource('product', ProductController::class);
 Route::resource('/{productCategory}/operating_system', OperatingSystemController::class);
 Route::resource('/{productTemplate}/product_subcategory', ProductSubcategoryController::class);
 
+Route::get('sub-category', [ProductSubcategoryController::class, 'getSubcategories']);
+
 Route::post('/template-product', [ProductController::class, 'getProductByTemplate']);
 Route::post('/sub-category-product', [ProductController::class, 'getProductBySubCategory']);
-Route::post(`getFilteredData`, [ProductController::class,'getFilteredData']);
+Route::post('/getFilteredData', [ProductController::class,'getFilteredData']);
 
 Route::post('/getFilterProduct',[ProductController::class,'getFilterProduct']);
 
-// CART
+//Get Product By Title
+Route::post('/getProductByTitle', [ProductController::class, 'getProductByTitle']);
 
+// CART
 Route::resource('cart',CartController::class);
 
 Route::get('/{product}/featuredImage', [FeaturedImageController::class, 'index']);
