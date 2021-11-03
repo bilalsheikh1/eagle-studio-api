@@ -9,6 +9,7 @@ use App\Models\ProductSubcategory;
 use App\Models\ProductTemplate;
 use App\Models\Screenshot;
 use App\Models\ThumbnailImage;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -23,6 +24,7 @@ class ProductController extends Controller
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
+//            ->where('user_id', $request->user()->id)
             if($request->urn) {
                 $product = ProductTemplate::query()->where('urn','like','%'. $request->urn .'%')->with(['products', 'products.productTemplate', 'products.thumbnailImage'])->get()->pluck('products');
                 if(count($product) > 0)
@@ -34,9 +36,53 @@ class ProductController extends Controller
             else if($request->status == "live")
                 return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('status', '=','1')->get());
             else
-                return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->get());
+                return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->paginate($request->pageSize));
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 500);
+        }
+    }
+
+    public function getRequests($status, Request $request): \Illuminate\Http\JsonResponse
+    {
+//        'productSubcategory', 'operatingSystems'
+        return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'thumbnailImage'])->where('status', $status)->paginate($request->pageSize));
+    }
+
+    public function mutateRequest(Product $product, $status): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $product->status = $status;
+            $product->update();
+            $status = ( $status == "0") ? "been pending" : ($status == "1" ? "been approved" : ($status == "2" ? "been rejected" : 'not update'));
+            return \response()->json("product has {$status}");
+        } catch (\Exception $exception){
+            return response()->json($exception->getMessage(), 500);
+        }
+    }
+
+    public function filteredProductRequest($status, Request $request): \Illuminate\Http\JsonResponse
+    {
+        try{
+//            return \response()->json($request->pagination['pageSize']);
+//            $product= Product::query()->with(['productTemplate' => function($q) use ($request) {
+//                if(isset($request->filters['product_template']))
+//                    $q->whereIn('name', $request->filters['product_template']);
+//            }, 'framework', 'productCategory' , 'thumbnailImage'])->where('status', $status)->paginate($request->pagination['pageSize']);
+
+            $product = Product::query()->with(['productTemplate', 'framework', 'productCategory', 'thumbnailImage'])
+                ->where('status', $status);
+            if(isset($request->filters['product_template']))
+                $product->whereIn('product_template_id', $request->filters['product_template']);
+            if(isset($request->filters['framework']))
+                $product->whereIn('framework_id', $request->filters['framework']);
+            if(isset($request->filters['product_category']))
+                $product->whereIn('product_category_id', $request->filters['product_category']);
+            if(isset($request->filters['title']))
+                $product->where('title', 'LIKE', '%'.$request->filters['title'][0].'%');
+//            paginate($request->pagination['pageSize'])
+            return \response()->json($product->paginate($request->pagination['pageSize'] && 10));
+        } catch (\Exception $exception){
+            return \response()->json($exception->getMessage(), 500);
         }
     }
 
@@ -172,7 +218,7 @@ class ProductController extends Controller
     public function show(Product $product): \Illuminate\Http\JsonResponse
     {
         try {
-            return response()->json($product->load(['productTemplate', 'productCategory', 'productSubcategory', 'operatingSystems', 'framework', 'featuredImage', 'screenshots', 'thumbnailImage', 'file']));
+            return response()->json($product->load(['productTemplate', 'productCategory', 'productSubcategory', 'operatingSystems', 'framework', 'featuredImage', 'screenshots', 'thumbnailImage', 'file','user']));
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage());
         }

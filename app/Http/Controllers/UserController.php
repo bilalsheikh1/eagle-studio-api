@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -28,6 +29,43 @@ class UserController extends Controller
     public function getDeactiveUser()
     {
         return response()->json(User::query()->where('id', '!=', auth()->user()->id)->where('active', 0)->get());
+    }
+
+    public function getProfile(Request $request)
+    {
+//        return response()->json($request->user()->wi);
+    }
+
+    public function getUsers(Request $request)
+    {
+        return response()->json(User::query()->where('is_admin', '!=' , '1')->paginate($request->pageSize));
+    }
+
+    public function getFilteredUsers(Request $request):\ Illuminate\Http\JsonResponse
+    {
+        try {
+            $users = User::query();
+            if(isset($request->filters['username']))
+                $users->where('username', $request->filters['username']);
+            if(isset($request->filters['name']))
+                $users->where('name', $request->filters['name']);
+            if(isset($request->filters['email']))
+                $users->where('email', $request->filters['email']);
+            return response()->json($users->paginate($request->pagination['pageSize']));
+        } catch (\Exception $exception){
+            return response()->json($exception->getMessage(), 500);
+        }
+    }
+
+    public function updateStatus(User $user, $status): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $user->active = $status;
+            $user->save();
+            return response()->json("user {$user->username} status updated");
+        }catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 
     /**
@@ -76,6 +114,22 @@ class UserController extends Controller
     public function show($id)
     {
         //
+    }
+
+    public function login(Request $request)
+    {
+        $request->validate([
+            "usrname"=> ['required','email'],
+            'password'=> ['required', '']
+        ]);
+        try {
+            if(Auth::attempt())
+            {
+                return response()->json($request->user());
+            }
+        } catch (\Exception $exception){
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 
     /**
