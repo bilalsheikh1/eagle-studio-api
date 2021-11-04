@@ -42,6 +42,24 @@ class ProductController extends Controller
         }
     }
 
+    public function getFilteredProducts(Request $request): \Illuminate\Http\JsonResponse
+    {
+        try{
+            $product = Product::query()->with(['productTemplate', 'framework', 'productCategory', 'thumbnailImage']);
+            if(isset($request->filters['product_template']))
+                $product->whereIn('product_template_id', $request->filters['product_template']);
+            if(isset($request->filters['framework']))
+                $product->whereIn('framework_id', $request->filters['framework']);
+            if(isset($request->filters['product_category']))
+                $product->whereIn('product_category_id', $request->filters['product_category']);
+            if(isset($request->filters['title']))
+                $product->where('title', 'LIKE', '%'.$request->filters['title'][0].'%');
+            return \response()->json($product->paginate($request->pagination['pageSize']));
+        } catch (\Exception $exception){
+            return \response()->json($exception->getMessage(), 500);
+        }
+    }
+
     public function getRequests($status, Request $request): \Illuminate\Http\JsonResponse
     {
 //        'productSubcategory', 'operatingSystems'
@@ -63,12 +81,6 @@ class ProductController extends Controller
     public function filteredProductRequest($status, Request $request): \Illuminate\Http\JsonResponse
     {
         try{
-//            return \response()->json($request->pagination['pageSize']);
-//            $product= Product::query()->with(['productTemplate' => function($q) use ($request) {
-//                if(isset($request->filters['product_template']))
-//                    $q->whereIn('name', $request->filters['product_template']);
-//            }, 'framework', 'productCategory' , 'thumbnailImage'])->where('status', $status)->paginate($request->pagination['pageSize']);
-
             $product = Product::query()->with(['productTemplate', 'framework', 'productCategory', 'thumbnailImage'])
                 ->where('status', $status);
             if(isset($request->filters['product_template']))
@@ -79,8 +91,7 @@ class ProductController extends Controller
                 $product->whereIn('product_category_id', $request->filters['product_category']);
             if(isset($request->filters['title']))
                 $product->where('title', 'LIKE', '%'.$request->filters['title'][0].'%');
-//            paginate($request->pagination['pageSize'])
-            return \response()->json($product->paginate($request->pagination['pageSize'] && 10));
+            return \response()->json($product->paginate($request->pagination['pageSize']));
         } catch (\Exception $exception){
             return \response()->json($exception->getMessage(), 500);
         }

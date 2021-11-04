@@ -41,6 +41,8 @@ Route::resource('user', UserController::class);
 Route::resource('/{productCategory}/operating_system', OperatingSystemController::class);
 Route::resource('/{productTemplate}/product_subcategory',ProductSubcategoryController::class);
 
+Route::post('/product/get-filtered-products', [ProductController::class, 'getFilteredProducts']);
+
 Route::get('sub-category', [ProductSubcategoryController::class, 'getSubcategories']);
 
 Route::post('/template-product', [ProductController::class, 'getProductByTemplate']);
