@@ -31,12 +31,21 @@ use \App\Http\Controllers\CommentController;
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-Route::middleware('auth:sanctum')->group(function () {
 
 Route::resource('product_template', ProductTemplateController::class);
 Route::resource('product_category', ProductCategoryController::class);
 Route::resource('framework', FrameworkController::class);
 Route::resource('product', ProductController::class);
+Route::post('/template-product', [ProductController::class, 'getProductByTemplate']);
+Route::post('/getFilterProduct',[ProductController::class,'getFilterProduct']);
+
+
+Route::middleware('auth:sanctum')->group(function () {
+
+//Route::resource('product_template', ProductTemplateController::class);
+//Route::resource('product_category', ProductCategoryController::class);
+//Route::resource('framework', FrameworkController::class);
+//Route::resource('product', ProductController::class);
 Route::resource('user', UserController::class);
 Route::resource('/{productCategory}/operating_system', OperatingSystemController::class);
 Route::resource('/{productTemplate}/product_subcategory',ProductSubcategoryController::class);
@@ -45,11 +54,11 @@ Route::post('/product/get-filtered-products', [ProductController::class, 'getFil
 
 Route::get('sub-category', [ProductSubcategoryController::class, 'getSubcategories']);
 
-Route::post('/template-product', [ProductController::class, 'getProductByTemplate']);
+//Route::post('/template-product', [ProductController::class, 'getProductByTemplate']);
 Route::post('/sub-category-product', [ProductController::class, 'getProductBySubCategory']);
 Route::post('/getFilteredData', [ProductController::class,'getFilteredData']);
 
-Route::post('/getFilterProduct',[ProductController::class,'getFilterProduct']);
+//Route::post('/getFilterProduct',[ProductController::class,'getFilterProduct']);
 
 // GET PRODUCT REQUEST
 Route::get('/product-request/{status}',[ProductController::class, 'getRequests']);

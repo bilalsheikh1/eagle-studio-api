@@ -119,9 +119,10 @@ class ProductController extends Controller
 //        ]);
         try {
             $product = Product::query();
-            $temp ="";
+            $checkType = "";
+//            return \response()->json($request->all());
             foreach ($request->all() as $key => $value){
-                $temp = $value['type'];
+                $checkType = $value['type'];
                 if($value['type'] == "category"){
                     $product->whereHas('productCategory', function ($q) use ($value){
                         $q->where('product_categories.id', $value['id']);
@@ -135,15 +136,21 @@ class ProductController extends Controller
                 if($value['type'] == "price"){
                     $product->whereBetween('single_app_license', $value['price']);
                 }
+                if(isset($value['name'])){
+                    if($value['name']!= "")
+                        $product->where('title', 'LIKE', '%'. $value['name'] .'%');
+                }
             }
-            if($temp == "category" || $temp == "subCategory" || $temp == "price") {
+            if($checkType == "category" || $checkType == "subCategory" || $checkType == "price" || $checkType == "name") {
                 $data=$product->with(['productCategory', 'thumbnailImage'])->get();
                 return response()->json($data);
             }
-            $product = ProductTemplate::query()->where('urn','like','%'. $request->urn .'%')->with(['products', 'products.productTemplate', 'products.thumbnailImage'])->get()->pluck('products');
-            if(count($product) > 0)
-                return response()->json($product[0]);
-            return response()->json("data not found");
+            if(isset($request->urn)) {
+                $product = ProductTemplate::query()->where('urn', 'like', '%' . $request->urn . '%')->with(['products', 'products.productTemplate', 'products.thumbnailImage'])->get()->pluck('products');
+                if (count($product) > 0)
+                    return response()->json($product[0]);
+            }
+            return response()->json([]);
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 500);
         }
@@ -322,5 +329,23 @@ class ProductController extends Controller
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 500);
         }
+    }
+
+    public function demo ()
+    {
+        $string = "hello world";
+        $word= "world";
+        $temp = "";
+        for ($i = 0; $i< strlen($word); $i++ ){
+            for ($j= 0 ; $j<strlen($string); $j++){
+                if ($string[$j] == $word[$i])
+                   $temp .= $word[$i];
+            }
+        }
+        dd(strlen($temp), strlen($word), $temp);
+        if(strlen($temp) == strlen($word))
+            dd("found");
+        else
+            dd("not found");
     }
 }
