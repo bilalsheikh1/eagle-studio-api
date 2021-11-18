@@ -120,7 +120,6 @@ class ProductController extends Controller
         try {
             $product = Product::query();
             $checkType = "";
-//            return \response()->json($request->all());
             foreach ($request->all() as $key => $value){
                 $checkType = $value['type'];
                 if($value['type'] == "category"){
