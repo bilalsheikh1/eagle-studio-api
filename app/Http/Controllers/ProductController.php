@@ -141,9 +141,9 @@ class ProductController extends Controller
                 }
             }
             if($checkType == "category" || $checkType == "subCategory" || $checkType == "price" || $checkType == "name") {
-                $data=$product->with(['productCategory', 'thumbnailImage'])->get();
-                return response()->json($data);
+                return response()->json($product->with(['productCategory', 'thumbnailImage'])->get());
             }
+
             if(isset($request->urn)) {
                 $product = ProductTemplate::query()->where('urn', 'like', '%' . $request->urn . '%')->with(['products', 'products.productTemplate', 'products.thumbnailImage'])->get()->pluck('products');
                 if (count($product) > 0)
