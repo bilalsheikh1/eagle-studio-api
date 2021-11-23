@@ -29,7 +29,7 @@ class ProductController extends Controller
                 $product = ProductTemplate::query()->where('urn','like','%'. $request->urn .'%')->with(['products', 'products.productTemplate', 'products.thumbnailImage'])->get()->pluck('products');
                 if(count($product) > 0)
                     return response()->json($product[0]);
-                return response()->json("data not found");
+                return response()->json([]);
             }
             if($request->status == "draft")
                 return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('status', '0')->get());
@@ -164,7 +164,7 @@ class ProductController extends Controller
             $product = ProductTemplate::query()->where('urn','like','%'. $request->urn .'%')->get();
             if(count($product) > 0)
                 return response()->json("data not found");
-            return response()->json();
+            return response()->json([]);
         } catch (\Exception $exception){
             return response()->json($exception->getMessage(), 500);
         }
