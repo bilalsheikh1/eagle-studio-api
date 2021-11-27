@@ -29,6 +29,7 @@ use \App\Http\Controllers\CommentController;
 */
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/sign-up', [AuthController::class, 'signUp']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 
