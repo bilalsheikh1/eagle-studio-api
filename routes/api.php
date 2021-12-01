@@ -36,70 +36,71 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 Route::resource('product_template', ProductTemplateController::class);
 Route::resource('product_category', ProductCategoryController::class);
 Route::resource('framework', FrameworkController::class);
-Route::resource('product', ProductController::class);
+Route::resource('product', ProductController::class)->only(['get', 'index','getProductBySubCategory','getFilterProduct','getProductByTemplate','filteredProductRequest','getFilteredProducts','getProductByTitle','show','getFilteredData']);
 Route::post('/template-product', [ProductController::class, 'getProductByTemplate']);
 Route::post('/getFilterProduct',[ProductController::class,'getFilterProduct']);
 
-
 Route::middleware('auth:sanctum')->group(function () {
 
-//Route::resource('product_template', ProductTemplateController::class);
-//Route::resource('product_category', ProductCategoryController::class);
-//Route::resource('framework', FrameworkController::class);
-//Route::resource('product', ProductController::class);
-Route::resource('user', UserController::class);
-Route::resource('/{productCategory}/operating_system', OperatingSystemController::class);
-Route::resource('/{productTemplate}/product_subcategory',ProductSubcategoryController::class);
+    //Route::resource('product_template', ProductTemplateController::class);
+    //Route::resource('product_category', ProductCategoryController::class);
+    //Route::resource('framework', FrameworkController::class);
+    //Route::resource('product', ProductController::class);
+    Route::post('add-product', [ProductController::class,'store']);
+    Route::resource('user', UserController::class);
+    Route::resource('/{productCategory}/operating_system', OperatingSystemController::class);
+    Route::resource('/{productTemplate}/product_subcategory',ProductSubcategoryController::class);
 
-Route::post('/product/get-filtered-products', [ProductController::class, 'getFilteredProducts']);
+    Route::post('/product/get-filtered-products', [ProductController::class, 'getFilteredProducts']);
 
-Route::get('sub-category', [ProductSubcategoryController::class, 'getSubcategories']);
+    Route::get('sub-category', [ProductSubcategoryController::class, 'getSubcategories']);
 
-//Route::post('/template-product', [ProductController::class, 'getProductByTemplate']);
-Route::post('/sub-category-product', [ProductController::class, 'getProductBySubCategory']);
-Route::post('/getFilteredData', [ProductController::class,'getFilteredData']);
+    //Route::post('/template-product', [ProductController::class, 'getProductByTemplate']);
+    Route::post('/sub-category-product', [ProductController::class, 'getProductBySubCategory']);
+    Route::post('/getFilteredData', [ProductController::class,'getFilteredData']);
 
-//Route::post('/getFilterProduct',[ProductController::class,'getFilterProduct']);
+    //Route::post('/getFilterProduct',[ProductController::class,'getFilterProduct']);
 
-// GET PRODUCT REQUEST
-Route::get('/product-request/{status}',[ProductController::class, 'getRequests']);
+    // GET PRODUCT REQUEST
+    Route::get('/product-request/{status}',[ProductController::class, 'getRequests']);
 
-//UPDATE REQUEST
-Route::put('{product}/product-request/{status}', [ProductController::class, 'mutateRequest']);
+    //UPDATE REQUEST
+    Route::put('{product}/product-request/{status}', [ProductController::class, 'mutateRequest']);
 
-//FILTERED PRODUCT REQUEST
-Route::post('product-fitlered/{status}', [ProductController::class, 'filteredProductRequest']);
+    //FILTERED PRODUCT REQUEST
+    Route::post('product-fitlered/{status}', [ProductController::class, 'filteredProductRequest']);
 
-//Get Product By Title
-Route::post('/getProductByTitle', [ProductController::class, 'getProductByTitle']);
+    //Get Product By Title
+    Route::post('/getProductByTitle', [ProductController::class, 'getProductByTitle']);
 
-// CART
-Route::resource('cart',CartController::class);
+    // CART
+    Route::resource('cart',CartController::class);
+//    Route::post('user/{user}/cart',[CartController::class, 'show']);
 
-//Comments Session
-Route::resource('/{product}/comment', CommentController::class);
-Route::post('/{product}/reply-comment',[CommentController::class, 'commentReply']);
+    //Comments Session
+    Route::resource('/{product}/comment', CommentController::class);
+    Route::post('/{product}/reply-comment',[CommentController::class, 'commentReply']);
 
-//GET USER PROFILE
-Route::post('/user-profile', [\App\Http\Controllers\UserController::class,'getProfile']);
-Route::post('/get-users', [UserController::class,'getUsers']);
-Route::post('/get-filtered-users', [UserController::class,'getFilteredUsers']);
-Route::post('/update-user-status/{user}/{status}', [UserController::class, 'updateStatus']);
+    //GET USER PROFILE
+    Route::post('/user-profile', [\App\Http\Controllers\UserController::class,'getProfile']);
+    Route::post('/get-users', [UserController::class,'getUsers']);
+    Route::post('/get-filtered-users', [UserController::class,'getFilteredUsers']);
+    Route::post('/update-user-status/{user}/{status}', [UserController::class, 'updateStatus']);
 
-Route::get('/{product}/featuredImage', [FeaturedImageController::class, 'index']);
-Route::post('/{product}/featuredImage', [FeaturedImageController::class, 'upload']);
-Route::delete('/{product}/featuredImage/{featuredImage}', [FeaturedImageController::class, 'destroy']);
+    Route::get('/{product}/featuredImage', [FeaturedImageController::class, 'index']);
+    Route::post('/{product}/featuredImage', [FeaturedImageController::class, 'upload']);
+    Route::delete('/{product}/featuredImage/{featuredImage}', [FeaturedImageController::class, 'destroy']);
 
-Route::get('/{product}/thumbnailImage', [ThumbnailImageController::class, 'index']);
-Route::post('/{product}/thumbnailImage', [ThumbnailImageController::class, 'upload']);
-Route::delete('/{product}/thumbnailImage/{thumbnailImage}', [ThumbnailImageController::class, 'destroy']);
+    Route::get('/{product}/thumbnailImage', [ThumbnailImageController::class, 'index']);
+    Route::post('/{product}/thumbnailImage', [ThumbnailImageController::class, 'upload']);
+    Route::delete('/{product}/thumbnailImage/{thumbnailImage}', [ThumbnailImageController::class, 'destroy']);
 
-Route::get('/{product}/screenshot', [ScreenshotController::class, 'index']);
-Route::post('/{product}/screenshot', [ScreenshotController::class, 'upload']);
-Route::delete('/{product}/screenshot/{screenshot}', [ScreenshotController::class, 'destroy']);
+    Route::get('/{product}/screenshot', [ScreenshotController::class, 'index']);
+    Route::post('/{product}/screenshot', [ScreenshotController::class, 'upload']);
+    Route::delete('/{product}/screenshot/{screenshot}', [ScreenshotController::class, 'destroy']);
 
-Route::get('/{product}/file', [FileController::class, 'index']);
-Route::post('/{product}/file', [FileController::class, 'upload']);
-Route::delete('/{product}/file/{file}', [FileController::class, 'destroy']);
+    Route::get('/{product}/file', [FileController::class, 'index']);
+    Route::post('/{product}/file', [FileController::class, 'upload']);
+    Route::delete('/{product}/file/{file}', [FileController::class, 'destroy']);
 
 });

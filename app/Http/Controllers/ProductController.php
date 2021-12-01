@@ -24,9 +24,10 @@ class ProductController extends Controller
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-//            ->where('user_id', $request->user()->id)
             if($request->urn) {
-                $product = ProductTemplate::query()->where('urn','like','%'. $request->urn .'%')->with(['products', 'products.productTemplate', 'products.thumbnailImage'])->get()->pluck('products');
+                $product = ProductTemplate::query()->where('urn','like','%'. $request->urn .'%')->with(['products' => function($q) {
+                    $q->where('status','1');
+                }, 'products.productTemplate', 'products.thumbnailImage'])->get()->pluck('products');
                 if(count($product) > 0)
                     return response()->json($product[0]);
                 return response()->json([]);
@@ -201,9 +202,10 @@ class ProductController extends Controller
             'development_hours' => ['numeric']*/
         ]);
 
-        try {
+//        try {
             $product = new Product;
             $product->fill($request->all());
+            $product->user()->associate($request->user());
             $product->productTemplate()->associate($request->product_template);
             $product->framework()->associate($request->framework);
             $product->productCategory()->associate($request->product_category);
@@ -211,9 +213,9 @@ class ProductController extends Controller
             $product->productSubcategory()->sync($request->product_subcategory);
             $product->operatingSystems()->sync($request->operating_systems);
             return response()->json($product);
-        } catch (\Exception $exception) {
-            return response()->json($exception->getMessage(), 500);
-        }
+//        } catch (\Exception $exception) {
+//            return response()->json($exception->getMessage(), 500);
+//        }
     }
 
     public function getProductByTitle(Request $request)
@@ -330,21 +332,4 @@ class ProductController extends Controller
         }
     }
 
-    public function demo ()
-    {
-        $string = "hello world";
-        $word= "world";
-        $temp = "";
-        for ($i = 0; $i< strlen($word); $i++ ){
-            for ($j= 0 ; $j<strlen($string); $j++){
-                if ($string[$j] == $word[$i])
-                   $temp .= $word[$i];
-            }
-        }
-        dd(strlen($temp), strlen($word), $temp);
-        if(strlen($temp) == strlen($word))
-            dd("found");
-        else
-            dd("not found");
-    }
 }

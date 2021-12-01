@@ -12,9 +12,9 @@ class CartController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index($id)
     {
-        return response()->json(Cart::query()->with(['product', 'product.thumbnailImage'])->where('user_id',1)->get());
+        return response()->json(Cart::query()->with(['product', 'product.thumbnailImage'])->where('user_id',$id)->get());
     }
 
     /**
@@ -55,12 +55,13 @@ class CartController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Cart  $cart
+//     * @param  \App\Models\Cart $cart
      * @return \Illuminate\Http\Response
      */
-    public function show(Cart $cart)
+    public function show($id)
     {
-        //
+        $data = Cart::query()->with(['product', 'product.thumbnailImage'])->where('user_id',$id)->get();
+        return response()->json($data);
     }
 
     /**

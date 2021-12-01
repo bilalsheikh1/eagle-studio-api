@@ -40,7 +40,7 @@ class AuthController extends Controller
             'name' => ['string', 'min:3', 'required'],
             'username' => ['string', 'min:3', 'required', 'unique:users,username'],
             'email' => ['unique:users,email', 'email', 'required'],
-            'password' => ['string', 'min:6', 'required']
+            'password' => ['string', 'min:4', 'required']
         ]);
         try{
             $user = new User();

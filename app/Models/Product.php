@@ -17,9 +17,9 @@ class Product extends Model
         return $this->belongsTo(ProductTemplate::class);
     }
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function productCategory(): \Illuminate\Database\Eloquent\Relations\BelongsTo
