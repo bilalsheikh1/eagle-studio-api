@@ -31,6 +31,7 @@ class ThumbnailImageController extends Controller
 //            'file' => ['required', 'dimensions:width=200,height=140']
 //        ]);
         try {
+            $product->thumbnailImage()->delete();
             $image = new ThumbnailImage();
             $image->name = $request->file('file')->getClientOriginalName();
             $image->path = $request->file('file')->storeAs('thumbnail_images', $image->name, 'public');
