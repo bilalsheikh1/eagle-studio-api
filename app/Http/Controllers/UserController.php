@@ -108,12 +108,18 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  User $user
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
-        //
+        try {
+            return response()->json($user->load(['products' => function($q){
+                $q->where('status', 1);
+            }]));
+        } catch (\Exception $exception){
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 
     public function login(Request $request)

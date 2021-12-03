@@ -36,9 +36,10 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 Route::resource('product_template', ProductTemplateController::class);
 Route::resource('product_category', ProductCategoryController::class);
 Route::resource('framework', FrameworkController::class);
-Route::resource('product', ProductController::class)->only(['get', 'index','getProductBySubCategory','getFilterProduct','getProductByTemplate','filteredProductRequest','getFilteredProducts','getProductByTitle','show','getFilteredData']);
+Route::resource('product', ProductController::class)->only(['get', 'index','getProductBySubCategory','getFilterProduct','getProductByTemplate','filteredProductRequest','getProductByTitle','show','getFilteredData']);
 Route::post('/template-product', [ProductController::class, 'getProductByTemplate']);
 Route::post('/getFilterProduct',[ProductController::class,'getFilterProduct']);
+Route::post('/product/get-filtered-products', [ProductController::class, 'getFilteredProducts']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -52,7 +53,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('/{productCategory}/operating_system', OperatingSystemController::class);
     Route::resource('/{productTemplate}/product_subcategory',ProductSubcategoryController::class);
 
-    Route::post('/product/get-filtered-products', [ProductController::class, 'getFilteredProducts']);
 
     Route::get('sub-category', [ProductSubcategoryController::class, 'getSubcategories']);
 
