@@ -24,7 +24,7 @@ class ProductController extends Controller
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            if($request->urn) {
+            if(isset($request->urn)) {
                 $product = ProductTemplate::query()->where('urn','like','%'. $request->urn .'%')->with(['products' => function($q) {
                     $q->where('status','1');
                 }, 'products.productTemplate', 'products.thumbnailImage'])->get()->pluck('products');
@@ -235,6 +235,15 @@ class ProductController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function show(Product $product): \Illuminate\Http\JsonResponse
+    {
+        try {
+            return response()->json($product->load(['productTemplate', 'productCategory', 'productSubcategory', 'operatingSystems', 'framework', 'featuredImage', 'screenshots', 'thumbnailImage', 'file','user']));
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage());
+        }
+    }
+
+    public function approvedProduct(Product $product)
     {
         try {
             return response()->json($product->load(['productTemplate', 'productCategory', 'productSubcategory', 'operatingSystems', 'framework', 'featuredImage', 'screenshots', 'thumbnailImage', 'file','user'])->where('status', 1));

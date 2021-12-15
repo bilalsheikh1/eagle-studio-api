@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -38,7 +39,7 @@ class UserController extends Controller
 
     public function getUsers(Request $request)
     {
-        return response()->json(User::query()->where('is_admin', '!=' , '1')->paginate($request->pageSize));
+        return response()->json(User::query()->where('is_admin', '!=' , '1')->where('id', '!=',$request->user()->id)->paginate($request->pageSize));
     }
 
     public function getFilteredUsers(Request $request):\ Illuminate\Http\JsonResponse
@@ -122,6 +123,16 @@ class UserController extends Controller
         }
     }
 
+    public function getUser($id)
+    {
+        try{
+            $user = User::query()->where('id', Crypt::decrypt($id))->first();
+            return response()->json($user);
+        } catch (\Exception $exception){
+            return response()->json($exception->getMessage(), 500);
+        }
+    }
+
     public function login(Request $request)
     {
         $request->validate([
@@ -133,6 +144,23 @@ class UserController extends Controller
             {
                 return response()->json($request->user());
             }
+        } catch (\Exception $exception){
+            return response()->json($exception->getMessage(), 500);
+        }
+    }
+
+    public function changePassword(User $user, Request $request)
+    {
+        $request->validate([
+            'current_password' => ['required'],
+            'password' => ['required', 'confirmed']
+        ]);
+        try {
+            if (!Hash::check($request->current_password, $user->password))
+                return response()->json('Current password does`nt match');
+            $user->password = bcrypt($request->password);
+            $user->save();
+            return response()->json("Password changed");
         } catch (\Exception $exception){
             return response()->json($exception->getMessage(), 500);
         }

@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -18,8 +19,8 @@ class AuthController extends Controller
             'password' => ['string', 'min:3']
         ]);
         try {
-            if (!Auth::attempt($request->only('username', 'password'))) {
-                return response()->json('Invalid login details', 401);
+            if (!Auth::attempt(['username' => $request->username, 'password' => $request->password, 'is_admin' => 0])) {
+                return response()->json('Invalid login details', 500);
             }
 
             $token = $request->user()->createToken('auth_token')->plainTextToken;
@@ -27,6 +28,7 @@ class AuthController extends Controller
             return response()->json([
                 'token' => $token,
                 'token_type' => 'Bearer',
+                'id' => Crypt::encrypt($request->user()->id),
                 'user' => $request->user()
             ]);
         } catch (\Exception $exception) {
@@ -58,6 +60,29 @@ class AuthController extends Controller
                 ]);
             } else return response()->json('user not created', 500);
         } catch (\Exception $exception){
+            return response()->json($exception->getMessage(), 500);
+        }
+    }
+
+    public function adminLogin(Request $request) :\Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'username' => ['string', 'min:3'],
+            'password' => ['string', 'min:3']
+        ]);
+        try {
+            if (!Auth::attempt(['username' => $request->username, 'password' => $request->password, 'is_admin' => 1])) {
+                return response()->json('Invalid login details', 401);
+            }
+
+            $token = $request->user()->createToken('auth_token')->plainTextToken;
+
+            return response()->json([
+                'token' => $token,
+                'token_type' => 'Bearer',
+                'user' => $request->user()
+            ]);
+        } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 500);
         }
     }

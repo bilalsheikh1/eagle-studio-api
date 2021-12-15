@@ -33,10 +33,10 @@ class OperatingSystemController extends Controller
      */
     public function store(ProductCategory $productCategory, Request $request): \Illuminate\Http\JsonResponse
     {
+        $request->validate([
+            'name' => ['required', 'string', 'unique:operating_systems,name']
+        ]);
         try {
-            $request->validate([
-                'name' => ['required', 'string', 'unique:operating_systems,name']
-            ]);
             $operating_system = $productCategory->operatingSystems()->create($request->all());
             return response()->json("Operating system has been created.");
         } catch (\Exception $exception) {

@@ -13,4 +13,9 @@ class Framework extends Model
         'created_at' => 'datetime:Y-m-d H:i:s A',
         'updated_at' => 'datetime:Y-m-d H:i:s A',
     ];
+
+    public function becomeSeller()
+    {
+        return $this->belongsToMany(BecomeSeller::class);
+    }
 }

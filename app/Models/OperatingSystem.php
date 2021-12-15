@@ -23,4 +23,9 @@ class OperatingSystem extends Model
     {
         return $this->belongsTo(ProductCategory::class);
     }
+
+    public function becomeSeller()
+    {
+        return $this->belongsToMany(BecomeSeller::class);
+    }
 }

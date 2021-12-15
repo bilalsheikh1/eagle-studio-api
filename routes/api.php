@@ -29,6 +29,7 @@ use \App\Http\Controllers\CommentController;
 */
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('admin/login', [AuthController::class, 'adminLogin']);
 Route::post('/sign-up', [AuthController::class, 'signUp']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
@@ -36,23 +37,28 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 Route::resource('product_template', ProductTemplateController::class);
 Route::resource('product_category', ProductCategoryController::class);
 Route::resource('framework', FrameworkController::class);
-Route::resource('product', ProductController::class)->except(['store','update','destroy']);
+Route::get('get-template/product', [ProductController::class, 'index']);
+Route::resource('product', ProductController::class)->except(['store', 'update', 'destroy']);
+//
 Route::post('/template-product', [ProductController::class, 'getProductByTemplate']);
 Route::post('/getFilterProduct',[ProductController::class,'getFilterProduct']);
 Route::post('/product/get-filtered-products', [ProductController::class, 'getFilteredProducts']);
-
 Route::middleware('auth:sanctum')->group(function () {
 
     //Route::resource('product_template', ProductTemplateController::class);
     //Route::resource('product_category', ProductCategoryController::class);
     //Route::resource('framework', FrameworkController::class);
-    //Route::resource('product', ProductController::class);
     Route::resource('product', ProductController::class);
+    Route::post('get/approved-products/{product}',[ProductController::class,'approvedProduct']);
+
     Route::post('add-product', [ProductController::class,'store']);
     Route::resource('user', UserController::class);
     Route::resource('/{productCategory}/operating_system', OperatingSystemController::class);
     Route::resource('/{productTemplate}/product_subcategory',ProductSubcategoryController::class);
+    Route::resource('become-seller', \App\Http\Controllers\BecomeSellerController::class);
 
+    Route::get('getUser/{id}', [UserController::class, 'getUser']);
+    Route::post('change-password/{user}', [UserController::class, 'changePassword']);
 
     Route::get('sub-category', [ProductSubcategoryController::class, 'getSubcategories']);
 
