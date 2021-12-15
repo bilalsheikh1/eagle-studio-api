@@ -42,7 +42,7 @@ class UserController extends Controller
         return response()->json(User::query()->where('is_admin', '!=' , '1')->where('id', '!=',$request->user()->id)->paginate($request->pageSize));
     }
 
-    public function getFilteredUsers(Request $request):\ Illuminate\Http\JsonResponse
+    public function getFilteredUsers(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $users = User::query();
