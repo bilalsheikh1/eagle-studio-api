@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBecomeSellerOperatingSystemTable extends Migration
+class CreateBecomeSellerProductCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateBecomeSellerOperatingSystemTable extends Migration
      */
     public function up()
     {
-        Schema::create('become_seller_operating_system', function (Blueprint $table) {
+        Schema::create('become_seller_product_category', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('operating_system_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('product_category_id')->constrained()->cascadeOnDelete();
             $table->foreignId('become_seller_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });

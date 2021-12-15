@@ -19,4 +19,9 @@ class ProductCategory extends Model
     {
         return $this->hasMany(OperatingSystem::class);
     }
+
+    public function becomeSeller()
+    {
+        return $this->belongsToMany(BecomeSeller::class);
+    }
 }

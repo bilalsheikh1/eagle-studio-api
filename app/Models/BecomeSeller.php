@@ -15,9 +15,9 @@ class BecomeSeller extends Model
         return  $this->belongsTo(User::class);
     }
 
-    public function operatingSystem()
+    public function productCategories()
     {
-        return $this->belongsToMany(OperatingSystem::class);
+        return $this->belongsToMany(ProductCategory::class);
     }
 
     public function framework()

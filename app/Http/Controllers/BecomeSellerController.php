@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BecomeSeller;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 class BecomeSellerController extends Controller
@@ -44,15 +45,15 @@ class BecomeSellerController extends Controller
             'billing_city' => ['required', 'string'],
             'billing_zip_postal_code' => ['required', 'string'],
             'VAT_number' => ['required', 'string'],
-            'operating_systems.*' => ['required', 'exists:operating_systems,id'],
+            'product_categories.*' => ['required', 'exists:product_categories,id'],
             'framework.*' => ['required', 'exists:frameworks,id']
         ]);
         try {
             $becomeSeller = new BecomeSeller();
-            $becomeSeller->fill($request->except(['framework', 'operating_systems']));
+            $becomeSeller->fill($request->except(['framework', 'product_categories']));
             $becomeSeller->user()->associate((int) $request->user()->id);
             $becomeSeller->save();
-            $becomeSeller->operatingSystem()->sync($request->operating_systems);
+            $becomeSeller->productCategories()->sync($request->product_categories);
             $becomeSeller->framework()->sync($request->framework);
             return response()->json("your become seller request has been farworded to admin");
         } catch (\Exception $exception) {
@@ -69,8 +70,7 @@ class BecomeSellerController extends Controller
     public function show($id)
     {
         try {
-            $becomeSeller = BecomeSeller::query()->with(['operatingSystem', 'framework'])->where('user_id', $id)->first();
-//            return $id;
+            $becomeSeller = BecomeSeller::query()->with(['productCategories', 'framework'])->where('user_id', $id)->first();
             return response()->json($becomeSeller);
 //            return response()->json($becomeSeller->load(['operatingSystem', 'framework']));
         } catch (\Exception $exception){
@@ -98,7 +98,28 @@ class BecomeSellerController extends Controller
      */
     public function update(Request $request, BecomeSeller $becomeSeller)
     {
-        //
+        $request->validate([
+            'developer_type' => ['required','string'],
+            'development_experience' => ['required', 'string'],
+            'paypal_email' => ['required', 'unique:become_sellers,paypal_email'],
+            'company_name' => ['required', 'string'],
+            'billing_address' => ['required', 'string'],
+            'billing_city' => ['required', 'string'],
+            'billing_zip_postal_code' => ['required', 'string'],
+            'VAT_number' => ['required', 'string'],
+            'product_categories.*' => ['required', 'exists:product_categories,id'],
+            'framework.*' => ['required', 'exists:frameworks,id']
+        ]);
+//        try {
+            $becomeSeller->fill($request->except(['framework', 'product_categories']));
+            $becomeSeller->user()->associate((int) $request->user()->id);
+            $becomeSeller->save();
+            $becomeSeller->productCategories()->sync($request->product_categories);
+            $becomeSeller->framework()->sync($request->framework);
+            return response()->json("your become seller request has been farworded to admin");
+//        } catch (\Exception $exception) {
+//            return response()->json($exception->getMessage(), 500);
+//        }
     }
 
     /**
