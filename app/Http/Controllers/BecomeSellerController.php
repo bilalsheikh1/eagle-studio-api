@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\BecomeSeller;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Validation\Rule;
 
 class BecomeSellerController extends Controller
 {
@@ -51,7 +53,7 @@ class BecomeSellerController extends Controller
         try {
             $becomeSeller = new BecomeSeller();
             $becomeSeller->fill($request->except(['framework', 'product_categories']));
-            $becomeSeller->user()->associate((int) $request->user()->id);
+            $becomeSeller->user()->associate($request->user()->id);
             $becomeSeller->save();
             $becomeSeller->productCategories()->sync($request->product_categories);
             $becomeSeller->framework()->sync($request->framework);
@@ -70,7 +72,7 @@ class BecomeSellerController extends Controller
     public function show($id)
     {
         try {
-            $becomeSeller = BecomeSeller::query()->with(['productCategories', 'framework'])->where('user_id', $id)->first();
+            $becomeSeller = BecomeSeller::query()->with(['productCategories', 'framework'])->where('user_id', Crypt::decrypt($id))->first();
             return response()->json($becomeSeller);
 //            return response()->json($becomeSeller->load(['operatingSystem', 'framework']));
         } catch (\Exception $exception){
@@ -101,7 +103,7 @@ class BecomeSellerController extends Controller
         $request->validate([
             'developer_type' => ['required','string'],
             'development_experience' => ['required', 'string'],
-            'paypal_email' => ['required', 'unique:become_sellers,paypal_email'],
+            'paypal_email' => ['required', Rule::unique('become_sellers')->ignore($becomeSeller)],
             'company_name' => ['required', 'string'],
             'billing_address' => ['required', 'string'],
             'billing_city' => ['required', 'string'],
@@ -110,16 +112,17 @@ class BecomeSellerController extends Controller
             'product_categories.*' => ['required', 'exists:product_categories,id'],
             'framework.*' => ['required', 'exists:frameworks,id']
         ]);
-//        try {
+        try {
             $becomeSeller->fill($request->except(['framework', 'product_categories']));
-            $becomeSeller->user()->associate((int) $request->user()->id);
+            $becomeSeller->active = 0;
+            $becomeSeller->user()->associate($request->user()->id);
             $becomeSeller->save();
             $becomeSeller->productCategories()->sync($request->product_categories);
             $becomeSeller->framework()->sync($request->framework);
             return response()->json("your become seller request has been farworded to admin");
-//        } catch (\Exception $exception) {
-//            return response()->json($exception->getMessage(), 500);
-//        }
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 
     /**

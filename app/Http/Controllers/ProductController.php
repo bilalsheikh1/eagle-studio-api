@@ -33,9 +33,11 @@ class ProductController extends Controller
                 return response()->json([]);
             }
             if($request->status == "draft")
-                return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('status', '0')->get());
+                return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('status', '0')->where('user_id', $request->user()->id)->get());
             else if($request->status == "live")
-                return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('status', '=','1')->get());
+                return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('status', '=','1')->where('user_id', $request->user()->id)->get());
+            else if($request->status == "all")
+                return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('user_id', $request->user()->id)->get());
             else
                 return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->paginate($request->pageSize));
         } catch (\Exception $exception) {
@@ -91,7 +93,7 @@ class ProductController extends Controller
             if(isset($request->filters['product_category']))
                 $product->whereIn('product_category_id', $request->filters['product_category']);
             if(isset($request->filters['title']))
-                $product->where('title', 'LIKE', '%'.$request->filters['title'][0].'%');
+                $product->where('title','LIKE', '%'.$request->filters['title'][0].'%');
             return \response()->json($product->paginate($request->pagination['pageSize']));
         } catch (\Exception $exception){
             return \response()->json($exception->getMessage(), 500);

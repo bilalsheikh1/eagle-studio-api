@@ -56,6 +56,7 @@ class AuthController extends Controller
                 return response()->json([
                     'token' => $token,
                     'token_type' => 'Bearer',
+                    'id' => Crypt::encrypt($request->user()->id),
                     'user' => $request->user()
                 ]);
             } else return response()->json('user not created', 500);
