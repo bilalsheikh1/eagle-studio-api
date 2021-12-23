@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BecomeSeller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -29,7 +30,8 @@ class AuthController extends Controller
                 'token' => $token,
                 'token_type' => 'Bearer',
                 'id' => Crypt::encrypt($request->user()->id),
-                'user' => $request->user()
+                'user' => $request->user(),
+                'becomeSeller' => BecomeSeller::query()->where('user_id', $request->user()->id)->get()
             ]);
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 500);

@@ -133,6 +133,11 @@ class BecomeSellerController extends Controller
      */
     public function destroy(BecomeSeller $becomeSeller)
     {
-        //
+        try {
+//            $becomeSeller->delete();
+//            return response()->json("");
+        } catch (\Exception $exception){
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 }

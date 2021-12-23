@@ -239,7 +239,9 @@ class ProductController extends Controller
     public function show(Product $product): \Illuminate\Http\JsonResponse
     {
         try {
-            return response()->json($product->load(['productTemplate', 'productCategory', 'productSubcategory', 'operatingSystems', 'framework', 'featuredImage', 'screenshots', 'thumbnailImage', 'file','user']));
+            if($product->status == 1)
+                return response()->json($product->load(['productTemplate', 'productCategory', 'productSubcategory', 'operatingSystems', 'framework', 'featuredImage', 'screenshots', 'thumbnailImage', 'file','user']));
+            return response()->json([]);
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage());
         }
