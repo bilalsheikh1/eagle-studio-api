@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 
-class CartController extends Controller
+class   CartController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -44,7 +45,7 @@ class CartController extends Controller
             $cart->type = $data[0];
             $cart->price = $data[1];
             $cart->product()->associate($data[2]);
-            $cart->user()->associate(1);
+            $cart->user()->associate($request->user()->id);
             $cart->save();
             return response()->json($cart->with(['product', 'product.thumbnailImage'])->get());
         } catch (\Exception $exception){
@@ -60,7 +61,7 @@ class CartController extends Controller
      */
     public function show($id)
     {
-        $data = Cart::query()->with(['product', 'product.thumbnailImage'])->where('user_id',$id)->get();
+        $data = Cart::query()->with(['product', 'product.thumbnailImage'])->where('user_id',Crypt::decrypt($id))->get();
         return response()->json($data);
     }
 

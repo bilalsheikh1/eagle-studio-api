@@ -126,7 +126,8 @@ class UserController extends Controller
     public function getUser($id)
     {
         try{
-            $user = User::query()->with('becomeSelller')->where('id', Crypt::decrypt($id))->first();
+            $user = User::query()->where('id', Crypt::decrypt($id))->first();
+            $user->becomeSeller = $user->becomeSeller()->exists();
             return response()->json($user);
         } catch (\Exception $exception){
             return response()->json($exception->getMessage(), 500);
