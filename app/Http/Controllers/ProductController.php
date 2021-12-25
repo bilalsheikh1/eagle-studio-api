@@ -206,7 +206,8 @@ class ProductController extends Controller
 
 //        try {
             $product = new Product;
-            $product->fill($request->all());
+            $product->fill($request->except('features'));
+            $product->features = json_encode($request->features);
             $product->user()->associate($request->user());
             $product->productTemplate()->associate($request->product_template);
             $product->framework()->associate($request->framework);
@@ -218,6 +219,15 @@ class ProductController extends Controller
 //        } catch (\Exception $exception) {
 //            return response()->json($exception->getMessage(), 500);
 //        }
+    }
+
+    public function getDraftProduct(Product $product)
+    {
+        try {
+            return \response()->json($product->load(['productTemplate', 'productCategory', 'productSubcategory', 'operatingSystems', 'framework', 'featuredImage', 'screenshots', 'thumbnailImage', 'file','user']));
+        } catch (\Exception $exception){
+            return \response()->json($exception->getMessage(), 500);
+        }
     }
 
     public function getProductByTitle(Request $request)
@@ -300,7 +310,8 @@ class ProductController extends Controller
             if($request->operating_systems)
                 $product->operatingSystems()->sync($request->operating_systems);
 
-            $product->fill($request->all());
+            $product->fill($request->except('features'));
+            $product->features = json_encode($request->features);
             $product->save();
             return response()->json($product);
         } catch (\Exception $exception) {

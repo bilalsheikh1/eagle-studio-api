@@ -51,6 +51,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('product', ProductController::class);
     Route::post('get/approved-products/{product}',[ProductController::class,'approvedProduct']);
 
+    Route::get('get-draft-product/{product}', [ProductController::class, 'getDraftProduct']);
     Route::post('add-product', [ProductController::class,'store']);
     Route::resource('user', UserController::class);
     Route::resource('/{productCategory}/operating_system', OperatingSystemController::class);
