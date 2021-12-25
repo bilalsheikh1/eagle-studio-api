@@ -22,7 +22,7 @@ class CreateBecomeSellersTable extends Migration
             $table->string('billing_address');
             $table->string('billing_city');
             $table->string('billing_zip_postal_code');
-            $table->string('VAT_number');
+            $table->string('VAT_number')->nullable(true);
             $table->smallInteger('active')->default('0')->comment('active = 1 means become seller request approved active =0 is pending and active = 2 means request discard');
             $table->foreignId('user_id');
             $table->timestamps();
