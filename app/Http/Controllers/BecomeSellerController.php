@@ -46,7 +46,6 @@ class BecomeSellerController extends Controller
             'billing_address' => ['required', 'string'],
             'billing_city' => ['required', 'string'],
             'billing_zip_postal_code' => ['required', 'string'],
-            'VAT_number' => ['required', 'string'],
             'product_categories.*' => ['required', 'exists:product_categories,id'],
             'framework.*' => ['required', 'exists:frameworks,id']
         ]);
