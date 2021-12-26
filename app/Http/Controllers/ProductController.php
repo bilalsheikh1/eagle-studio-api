@@ -191,23 +191,13 @@ class ProductController extends Controller
             'operating_systems.*' => ['required', 'exists:operating_systems,id'],
             'framework' => ['required', 'exists:frameworks,id'],
             'description' => ['required'],
-/*            'features' => ['required'],
-            'featured_image' => ['required', 'dimensions:width=650,height=290'],
-            'thumbnail_image' => ['required', 'dimensions:width=200,height=140'],
-            'screenshots.*' => ['required', 'image'],
-            'youtube_link' => ['nullable', 'URL'],
-            'google_play_link' => ['nullable', 'URL'],
-            'app_store_link' => ['nullable', 'URL'],
-            'files.*' => ['required', 'mimes:zip,rar'],
-            'single_app_license' => ['required'],
-            'multi_app_license' => ['required'],
-            'development_hours' => ['numeric']*/
         ]);
 
-//        try {
+        try {
             $product = new Product;
-            $product->fill($request->except('features'));
+            $product->fill($request->except(['features', 'description']));
             $product->features = json_encode($request->features);
+            $product->description = json_encode($request->description);
             $product->user()->associate($request->user());
             $product->productTemplate()->associate($request->product_template);
             $product->framework()->associate($request->framework);
@@ -216,9 +206,9 @@ class ProductController extends Controller
             $product->productSubcategory()->sync($request->product_subcategory);
             $product->operatingSystems()->sync($request->operating_systems);
             return response()->json($product);
-//        } catch (\Exception $exception) {
-//            return response()->json($exception->getMessage(), 500);
-//        }
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 
     public function getDraftProduct(Product $product)
@@ -290,15 +280,6 @@ class ProductController extends Controller
         }
 
         try {
-//            if($request->step3) {
-//                $product->single_app_license = $request->single_app_license;
-//                $product->multi_app_license = $request->multi_app_license;
-//                $product->development_hours = $request->develop_hours;
-//            } else {
-//                $product->youtube_link = $request->youtube_link;
-//                $product->google_play_link = $request->google_play_link;
-//                $product->app_store_link = $request->app_store_link;
-//            }
             if($request->product_template)
                 $product->productTemplate()->associate($request->product_template);
             if($request->framework)
@@ -310,8 +291,9 @@ class ProductController extends Controller
             if($request->operating_systems)
                 $product->operatingSystems()->sync($request->operating_systems);
 
-            $product->fill($request->except('features'));
+            $product->fill($request->except(['features', 'description']));
             $product->features = json_encode($request->features);
+            $product->description = json_encode($request->description);
             $product->save();
             return response()->json($product);
         } catch (\Exception $exception) {
