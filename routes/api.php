@@ -17,6 +17,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\AuthController;
 use \App\Http\Controllers\CommentController;
+use \App\Http\Controllers\sliderController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -43,12 +45,16 @@ Route::resource('product', ProductController::class)->except(['store', 'update',
 Route::post('/template-product', [ProductController::class, 'getProductByTemplate']);
 Route::post('/getFilterProduct',[ProductController::class,'getFilterProduct']);
 Route::post('/product/get-filtered-products', [ProductController::class, 'getFilteredProducts']);
+Route::resource('slider', sliderController::class)->only('index');
+
 Route::middleware('auth:sanctum')->group(function () {
 
     //Route::resource('product_template', ProductTemplateController::class);
     //Route::resource('product_category', ProductCategoryController::class);
     //Route::resource('framework', FrameworkController::class);
+    Route::resource('system-settings', \App\Http\Controllers\SystemSettingController::class);
     Route::resource('product', ProductController::class);
+    Route::resource('slider', sliderController::class);
     Route::post('get/approved-products/{product}',[ProductController::class,'approvedProduct']);
 
     Route::get('get-draft-product/{product}', [ProductController::class, 'getDraftProduct']);

@@ -51,4 +51,9 @@ class User extends Authenticatable
     {
         return  $this->hasMany(BecomeSeller::class);
     }
+
+    public function sliders()
+    {
+        return $this->hasMany(Slider::class);
+    }
 }
