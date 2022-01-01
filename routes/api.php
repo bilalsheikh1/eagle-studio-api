@@ -45,7 +45,8 @@ Route::resource('product', ProductController::class)->except(['store', 'update',
 Route::post('/template-product', [ProductController::class, 'getProductByTemplate']);
 Route::post('/getFilterProduct',[ProductController::class,'getFilterProduct']);
 Route::post('/product/get-filtered-products', [ProductController::class, 'getFilteredProducts']);
-Route::resource('slider', sliderController::class)->only('index');
+Route::post('/get-front-settings', [\App\Http\Controllers\SystemSettingController::class,'getFrontSettings']);
+Route::get('get-slider', [sliderController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BecomeSeller;
+use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -20,18 +21,15 @@ class AuthController extends Controller
             'password' => ['string', 'min:3']
         ]);
         try {
-            if (!Auth::attempt(['username' => $request->username, 'password' => $request->password, 'is_admin' => 0])) {
+            if (!Auth::attempt(['username' => $request->username, 'password' => $request->password, 'is_admin' => 0]))
                 return response()->json('Invalid login details', 500);
-            }
-
             $token = $request->user()->createToken('auth_token')->plainTextToken;
-
             return response()->json([
                 'token' => $token,
                 'token_type' => 'Bearer',
                 'id' => Crypt::encrypt($request->user()->id),
                 'user' => $request->user(),
-                'becomeSeller' => BecomeSeller::query()->where('user_id', $request->user()->id)->exists()
+                'becomeSeller' => BecomeSeller::query()->where('user_id', $request->user()->id)->exists(),
             ]);
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 500);
