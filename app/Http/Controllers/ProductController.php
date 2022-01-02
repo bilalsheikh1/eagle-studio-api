@@ -211,15 +211,6 @@ class ProductController extends Controller
         }
     }
 
-    public function getDraftProduct(Product $product)
-    {
-        try {
-            return \response()->json($product->load(['productTemplate', 'productCategory', 'productSubcategory', 'operatingSystems', 'framework', 'featuredImage', 'screenshots', 'thumbnailImage', 'file','user']));
-        } catch (\Exception $exception){
-            return \response()->json($exception->getMessage(), 500);
-        }
-    }
-
     public function getProductByTitle(Request $request)
     {
         $request->validate([
@@ -229,6 +220,15 @@ class ProductController extends Controller
             return response()->json(Product::query()->with(['thumbnailImage', 'productCategory'])->where('title', 'LIKE', '%'. $request->title .'%')->get());
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(),500);
+        }
+    }
+
+    public function getProduct(Product $product)
+    {
+        try {
+            return response()->json($product->load(['productTemplate', 'productCategory', 'productSubcategory', 'operatingSystems', 'framework', 'featuredImage', 'screenshots', 'thumbnailImage', 'file','user']));
+        } catch (\Exception $exception){
+            return \response()->json($exception->getMessage(), 500);
         }
     }
 
