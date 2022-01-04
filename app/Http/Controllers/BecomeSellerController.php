@@ -20,6 +20,11 @@ class BecomeSellerController extends Controller
         return response()->json(BecomeSeller::query()->get());
     }
 
+    public function getBecomeSeller(Request $request)
+    {
+        return response()->json(BecomeSeller::query()->where('user_id', $request->user()->id)->exists());
+    }
+
     /**
      * Show the form for creating a new resource.
      *

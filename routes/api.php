@@ -64,6 +64,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('/{productTemplate}/product_subcategory',ProductSubcategoryController::class);
     Route::resource('become-seller', \App\Http\Controllers\BecomeSellerController::class);
 
+    Route::get('get-become-seller',[\App\Http\Controllers\BecomeSellerController::class, 'getBecomeSeller']);
     Route::get('getUser/{id}', [UserController::class, 'getUser']);
     Route::post('change-password/{user}', [UserController::class, 'changePassword']);
 

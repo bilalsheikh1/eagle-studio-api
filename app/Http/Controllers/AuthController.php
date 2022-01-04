@@ -29,7 +29,6 @@ class AuthController extends Controller
                 'token_type' => 'Bearer',
                 'id' => Crypt::encrypt($request->user()->id),
                 'user' => $request->user(),
-                'becomeSeller' => BecomeSeller::query()->where('user_id', $request->user()->id)->exists(),
             ]);
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 500);
