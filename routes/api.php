@@ -119,3 +119,33 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/{product}/file/{file}', [FileController::class, 'destroy']);
 
 });
+
+
+Route::middleware('auth:sanctum')->prefix('admin')->name('admin.')->group(function () {
+
+    //RESOURCES
+    Route::resource('system-settings', \App\Http\Controllers\SystemSettingController::class);
+    Route::resource('product', ProductController::class);
+    Route::resource('slider', sliderController::class);
+    Route::resource('user', UserController::class);
+    Route::resource('/{productCategory}/operating_system', OperatingSystemController::class);
+    Route::resource('/{productTemplate}/product_subcategory',ProductSubcategoryController::class);
+    Route::resource('framework', FrameworkController::class);
+    Route::resource('product_category', ProductCategoryController::class);
+    Route::resource('product_template', ProductTemplateController::class);
+
+
+    //REQUESTS ROUTES
+    Route::post('get/approved-products/{product}',[ProductController::class,'approvedProduct']);
+
+    //REQUEST PRODUCTS
+    Route::get('/product-request/{status}',[ProductController::class, 'getRequests']);
+
+    //GET PRODUCT BY ID
+    Route::post('get-product/{product}',[ProductController::class,'getProduct']);
+
+    //GET
+    Route::post('/{product}/file', [FileController::class, 'downloadFile']);
+});
+
+Route::post('/{product}/file/fil', [FileController::class, 'downloadFile']);

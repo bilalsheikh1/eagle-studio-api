@@ -17,6 +17,19 @@ class FileController extends Controller
         return response()->json('');
     }
 
+    public function downloadFile(Product $product)
+    {
+        try {
+            if ($product->file != null && $product->file != '') {
+                $path = storage_path('app/' . $product->file->path);
+                return response()->download($path, $product->file->name);
+            }
+            return response()->json('');
+        } catch (\Exception $exception){
+            return response()->json($exception->getMessage(), 500);
+        }
+    }
+
     /**
      * Uploads file to server
      * @param Request $request
