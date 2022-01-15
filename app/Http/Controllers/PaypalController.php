@@ -47,7 +47,7 @@ class PaypalController extends Controller
             "product_ids" => ["required", "array"],
             "paypalData" => ["required"]
         ]);
-        return gettype($request->cart);
+        return gettype($request->cart[0]->price);
         try {
             $paypal = new Paypal();
             $order = new Order();
