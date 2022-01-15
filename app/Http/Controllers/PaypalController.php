@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\APIResponse\ApiResponse;
 use App\Models\Paypal;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
