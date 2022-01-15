@@ -48,7 +48,7 @@ class PaypalController extends Controller
             "paypalData" => ["required"]
         ]);
         try {
-            return $request->cart[0];
+            return $request->cart;
 
             $paypal = new Paypal();
             $order = new Order();
