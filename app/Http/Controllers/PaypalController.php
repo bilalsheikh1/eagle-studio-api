@@ -48,7 +48,7 @@ class PaypalController extends Controller
             "paypalData" => ["required"]
         ]);
         try {
-            return $request->paypalData["paypal_id"];
+
             $paypal = new Paypal();
             $order = new Order();
             $purchase = new Purchase();
@@ -66,19 +66,19 @@ class PaypalController extends Controller
             $purchase->save();
             $purchase->product()->attach($request->product_ids);
 
-            $paypal->paypal_id = $request->paypal_id;
-            $paypal->intent = $request->intent;
-            $paypal->country_code = $request->country_code;
-            $paypal->payer_name = $request->payer_name;
-            $paypal->payer_surname = $request->payer_surname;
-            $paypal->payer_email = $request->payer_email;
-            $paypal->payer_id = $request->payer_id;
-            $paypal->currency_code = $request->currency_code;
-            $paypal->amount = $request->amount;
-            $paypal->payer_email = $request->payer_email;
-            $paypal->payee_merchant_id = $request->payee_merchant_id;
+            $paypal->paypal_id = $request->paypalData["paypal_id"];
+            $paypal->intent = $request->paypalData["intent"];
+            $paypal->country_code = $request->paypalData["country_code"];
+            $paypal->payer_name = $request->paypalData["payer_name"];
+            $paypal->payer_surname = $request->paypalData["payer_surname"];
+            $paypal->payer_email = $request->paypalData["payer_email"];
+            $paypal->payer_id = $request->paypalData["payer_id"];
+            $paypal->currency_code = $request->paypalData["currency_code"];
+            $paypal->amount = $request->paypalData["amount"];
+            $paypal->payer_email = $request->paypalData["payer_email"];
+            $paypal->payee_merchant_id = $request->paypalData["payee_merchant_id"];
 //            $paypal->paypal_payment_status = $request->paypal_payment_status;
-            $paypal->status = $request->status;
+            $paypal->status = $request->paypalData["status"];
 
             $paypal->payee_email = $request->payee_email;
             $paypal->purchase_id = $purchase->id;
