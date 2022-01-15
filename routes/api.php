@@ -123,7 +123,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 
-    //ADMIN LOGIN
+    //ADMIN LOGINproduct-reques
     Route::post('admin/login', [AuthController::class, 'adminLogin']);
 
 Route::middleware('auth:sanctum')->prefix('admin')->name('admin.')->group(function () {
