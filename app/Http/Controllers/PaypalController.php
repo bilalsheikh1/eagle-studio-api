@@ -79,8 +79,9 @@ class PaypalController extends Controller
             $paypal->amount = $request->amount;
             $paypal->payer_email = $request->payer_email;
             $paypal->payee_merchant_id = $request->payee_merchant_id;
-            $paypal->paypal_payment_status = $request->paypal_payment_status;
+//            $paypal->paypal_payment_status = $request->paypal_payment_status;
             $paypal->status = $request->status;
+
             $paypal->payee_email = $request->payee_email;
             $paypal->purchase_id = $purchase->id;
             $paypal->order_id = $order->id;
