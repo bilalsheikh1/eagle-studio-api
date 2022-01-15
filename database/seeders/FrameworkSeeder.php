@@ -14,6 +14,6 @@ class FrameworkSeeder extends Seeder
      */
     public function run()
     {
-        Framework::query()->updateOrInsert(["Unity"],["Unity"]);
+        Framework::query()->updateOrInsert(["name" => "Unity"],["name" => "Unity"]);
     }
 }
