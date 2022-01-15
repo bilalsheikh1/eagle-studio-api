@@ -48,21 +48,20 @@ class PaypalController extends Controller
             "paypalData" => ["required"]
         ]);
         try {
-            return $request->cart["price"];
-
+            return $request->paypalData["paypal_id"];
             $paypal = new Paypal();
             $order = new Order();
             $purchase = new Purchase();
 
             $order->status = true;
-            $order->total = $request->cart->price;
+            $order->total = $request->cart["price"];
             $order->user()->associate($request->user()->id);
             $order->save();
 
             $order->products()->attach($request->product_ids);
 
             $purchase->type = "paypal";
-            $purchase->total = $request->cart->price;
+            $purchase->total = $request->cart["price"];
             $purchase->user()->associate($request->user()->id);
             $purchase->save();
             $purchase->product()->attach($request->product_ids);
