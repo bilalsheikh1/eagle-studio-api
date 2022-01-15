@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Paypal;
 use App\Models\Purchase;
@@ -52,19 +53,16 @@ class PaypalController extends Controller
             $order = new Order();
             $purchase = new Purchase();
 
-
-            $product_ids = [];
-
             $order->status = true;
-            $order->total = $request->price;
+            $order->total = $request->cart->price;
             $order->user()->associate($request->user()->id);
             $order->save();
 
             $order->products()->attach($request->product_ids);
 
             $purchase->type = "paypal";
-            $purchase->total = "200";
-            $purchase->user()->associate(3);
+            $purchase->total = $request->cart->price;
+            $purchase->user()->associate($request->user()->id);
             $purchase->save();
             $purchase->product()->attach($request->product_ids);
 
@@ -87,6 +85,8 @@ class PaypalController extends Controller
             $paypal->order_id = $order->id;
 
             $paypal->save();
+
+            Cart::query()->where("id", $request->cart->id)->update(["active" => "0"]);
 
             return $this->apiSuccess("Payment successful", []);;
         } catch (\Exception $exception) {
