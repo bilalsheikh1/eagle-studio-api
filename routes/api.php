@@ -78,8 +78,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // GET PRODUCT REQUEST
     Route::get('/product-request/{status}',[ProductController::class, 'getRequests']);
 
-    //UPDATE REQUEST
-    Route::put('{product}/product-request/{status}', [ProductController::class, 'mutateRequest']);
+
 
     //FILTERED PRODUCT REQUEST
     Route::post('product-fitlered/{status}', [ProductController::class, 'filteredProductRequest']);
@@ -152,7 +151,8 @@ Route::middleware('auth:sanctum')->prefix('admin')->name('admin.')->group(functi
     //GET
     Route::post('/{product}/file', [FileController::class, 'downloadFile']);
 
-
+    //UPDATE REQUEST
+    Route::put('{product}/product-request/{status}', [ProductController::class, 'mutateRequest']);
 
     //LOGOUT
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
