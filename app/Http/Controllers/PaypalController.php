@@ -75,7 +75,7 @@ class PaypalController extends Controller
             $paypal->payer_id = $request->paypalData["payer_id"];
             $paypal->currency_code = $request->paypalData["currency_code"];
             $paypal->amount = $request->paypalData["amount"];
-            $paypal->payer_email = $request->paypalData["payer_email"];
+            $paypal->payee_email = $request->paypalData["payee_email"];
             $paypal->payee_merchant_id = $request->paypalData["payee_merchant_id"];
 //            $paypal->paypal_payment_status = $request->paypal_payment_status;
             $paypal->status = $request->paypalData["status"];
