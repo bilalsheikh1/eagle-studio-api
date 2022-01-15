@@ -291,9 +291,11 @@ class ProductController extends Controller
             if($request->operating_systems)
                 $product->operatingSystems()->sync($request->operating_systems);
 
-            $product->fill($request->except(['features', 'description']));
-            $product->features = json_encode($request->features);
-            $product->description = json_encode($request->description);
+            $product->fill($request->all());
+            if(isset($request->features))
+                $product->features = json_encode($request->features);
+            if(isset($request->description))
+                $product->description = json_encode($request->description);
             $product->save();
             return response()->json($product);
         } catch (\Exception $exception) {

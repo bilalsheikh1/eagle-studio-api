@@ -67,9 +67,19 @@ class Product extends Model
         return $this->hasMany(Comment::class);
     }
 
-//    public function carts(): \Illuminate\Database\Eloquent\Relations\HasMany
-//    {
-//        return $this->hasMany(Cart::class);
-//    }
+    public function cart(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Cart::class);
+    }
+
+    public function orders(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Order::class);
+    }
+
+    public function purchase(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Purchase::class);
+    }
 
 }

@@ -31,7 +31,6 @@ use \App\Http\Controllers\sliderController;
 */
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('admin/login', [AuthController::class, 'adminLogin']);
 Route::post('/sign-up', [AuthController::class, 'signUp']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
@@ -118,8 +117,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/{product}/file', [FileController::class, 'upload']);
     Route::delete('/{product}/file/{file}', [FileController::class, 'destroy']);
 
+    //PAYMENT
+
+    Route::resource('paypal', \App\Http\Controllers\PaypalController::class);
+
 });
 
+    //ADMIN LOGIN
+    Route::post('admin/login', [AuthController::class, 'adminLogin']);
 
 Route::middleware('auth:sanctum')->prefix('admin')->name('admin.')->group(function () {
 
@@ -146,6 +151,7 @@ Route::middleware('auth:sanctum')->prefix('admin')->name('admin.')->group(functi
 
     //GET
     Route::post('/{product}/file', [FileController::class, 'downloadFile']);
+
 
 
     //LOGOUT

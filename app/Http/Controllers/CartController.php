@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Crypt;
 
 class   CartController extends Controller
 {
+
+    use \App\Http\Traits\ApiResponse;
+
     /**
      * Display a listing of the resource.
      *
@@ -41,15 +44,43 @@ class   CartController extends Controller
         ]);
         try{
             $data = explode("-",$request->price);
-            $cart = new Cart();
-            $cart->type = $data[0];
-            $cart->price = $data[1];
-            $cart->product()->associate($data[2]);
-            $cart->user()->associate($request->user()->id);
+            $cart = Cart::query()->where("user_id",$request->user()->id)->where("active", "1")->first();
+
+            if(empty($cart)) {
+
+                $cart = new Cart();
+
+                $cart->price = $data[1];
+                $cart->user()->associate($request->user()->id);
+                $cart->save();
+                $cart->product()->attach($data[2], ["type" => $data[0]]);
+
+                $arrayData = $cart->with(['product', 'product.thumbnailImage'])->where("active", "1")->get();
+                $message = "Product added into cart";
+                return $this->apiSuccess($message, $arrayData);
+            }
+            else {
+
+                $validate = Cart::query()->with(["product" => function ($q) use ($cart, $data) {
+                    $q->where("cart_id", $cart->id)->where("product_id", $data[2]);
+                }])->where("active", "1")->first();
+
+                if(count($validate->product) > 0) {
+                    $message = "This product already selected in cart list please remove first then add";
+                    $arrayData = $cart->with(['product', 'product.thumbnailImage'])->where("active", "1")->get();
+                    return $this->apiSuccess($message, $arrayData,"",false);
+                }
+            }
+
+            $cart->price = $cart->price + $data[1];
             $cart->save();
-            return response()->json($cart->with(['product', 'product.thumbnailImage'])->get());
-        } catch (\Exception $exception){
-            return response()->json($exception->getMessage(), 500);
+            $cart->product()->attach($data[2], ["type" => $data[0]]);
+
+            $arrayData = $cart->with(['product', 'product.thumbnailImage'])->where("active", "1")->get();
+            $message = "Product added into cart";
+            return $this->apiSuccess($message, $arrayData,"",true);
+        } catch (\Exception $exception) {
+            return $this->apiFailed("", [],$exception->getMessage() ,false, 500);
         }
     }
 
@@ -61,7 +92,7 @@ class   CartController extends Controller
      */
     public function show($id)
     {
-        $data = Cart::query()->with(['product', 'product.thumbnailImage'])->where('user_id',Crypt::decrypt($id))->get();
+        $data = Cart::query()->with(['product', 'product.thumbnailImage'])->where("active", "1")->where('user_id',Crypt::decrypt($id))->get();
         return response()->json($data);
     }
 
@@ -94,13 +125,27 @@ class   CartController extends Controller
      * @param  \App\Models\Cart  $cart
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Cart $cart)
+    public function destroy(Cart $cart, Request $request)
     {
+        $apiResponse = new \stdClass();
         try{
-            $cart->delete();
-            return response()->json($cart->with(['product', 'product.thumbnailImage'])->get());
-        } catch (\Exception $exception){
-            return response()->json($exception->getMessage(), 500);
+            $cart->product()->detach($request->product_id);
+
+            $cart->price = $cart->price - $request->price;
+            $cart->save();
+
+            $validate = Cart::query()->with(["product" => function ($q) use ($cart, $request) {
+                $q->where("cart_id", $cart->id);
+            }])->where("active", "1")->first();
+
+            if(count($validate->product) == 0) {
+                $cart->delete();
+            }
+            $message = "product has been removed on cart";
+            $arrayData = $cart->with(['product', 'product.thumbnailImage'])->where("active", "1")->get();
+            return $this->apiSuccess($message, $arrayData,"",true);
+        } catch (\Exception $exception) {
+            return $this->apiFailed("", [],$exception->getMessage(), false);
         }
     }
 }

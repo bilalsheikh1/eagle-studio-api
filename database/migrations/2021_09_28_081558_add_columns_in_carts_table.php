@@ -14,10 +14,8 @@ class AddColumnsInCartsTable extends Migration
     public function up()
     {
         Schema::table('carts', function (Blueprint $table) {
-            $table->string('type')->after('id');
-            $table->string('price')->after('type');
-            $table->unsignedBigInteger('product_id')->after('user_id');
-            $table->foreign('product_id')->references('id')->on('products');
+            $table->string('price')->after('id');
+            $table->smallInteger("active")->default("1")->after("price");
         });
     }
 

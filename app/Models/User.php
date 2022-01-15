@@ -56,4 +56,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Slider::class);
     }
+
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class);
+    }
 }

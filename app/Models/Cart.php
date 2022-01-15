@@ -9,9 +9,9 @@ class Cart extends Model
 {
     use HasFactory;
 
-    public function product(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function product(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsToMany(Product::class)->withPivot("type");
     }
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
