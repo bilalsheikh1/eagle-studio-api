@@ -85,7 +85,7 @@ class PaypalController extends Controller
 
             $paypal->save();
 
-            Cart::query()->where("id", $request->cart->id)->update(["active" => "0"]);
+            Cart::query()->where("id", $request->cart["id"])->update(["active" => "0"]);
 
             return $this->apiSuccess("Payment successful", []);;
         } catch (\Exception $exception) {
