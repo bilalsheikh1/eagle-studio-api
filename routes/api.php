@@ -55,13 +55,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('system-settings', \App\Http\Controllers\SystemSettingController::class);
     Route::resource('product', ProductController::class);
     Route::resource('slider', sliderController::class);
-    Route::post('get/approved-products/{product}',[ProductController::class,'approvedProduct']);
-    Route::post('get-product/{product}',[ProductController::class,'getProduct']);
-    Route::post('add-product', [ProductController::class,'store']);
     Route::resource('user', UserController::class);
     Route::resource('/{productCategory}/operating_system', OperatingSystemController::class);
     Route::resource('/{productTemplate}/product_subcategory',ProductSubcategoryController::class);
     Route::resource('become-seller', \App\Http\Controllers\BecomeSellerController::class);
+
+    Route::post('get/approved-products/{product}',[ProductController::class,'approvedProduct']);
+    Route::post('get-product/{product}',[ProductController::class,'getProduct']);
+    Route::post('add-product', [ProductController::class,'store']);
 
     Route::get('get-become-seller',[\App\Http\Controllers\BecomeSellerController::class, 'getBecomeSeller']);
     Route::get('getUser/{id}', [UserController::class, 'getUser']);
@@ -77,8 +78,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // GET PRODUCT REQUEST
     Route::get('/product-request/{status}',[ProductController::class, 'getRequests']);
-
-
 
     //FILTERED PRODUCT REQUEST
     Route::post('product-fitlered/{status}', [ProductController::class, 'filteredProductRequest']);
@@ -120,9 +119,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::resource('paypal', \App\Http\Controllers\PaypalController::class);
 
+    //Orders
+    Route::resource("order", \App\Http\Controllers\OrderController::class);
+    Route::resource("purchase", \App\Http\Controllers\PurchaseController::class);
+
 });
 
-    //ADMIN LOGINproduct-reques
+    //ADMIN LOGIN
     Route::post('admin/login', [AuthController::class, 'adminLogin']);
 
 Route::middleware('auth:sanctum')->prefix('admin')->name('admin.')->group(function () {

@@ -2,19 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\ApiResponse;
 use App\Models\Order;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    use ApiResponse;
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        try {
+            $orders = Order::query()->with(["products", "user"])->whereHas("products", function ($q) use ($request){
+                $q->where("user_id", $request->user()->id);
+            })->get();
+            return $this->apiSuccess("", $orders);
+        } catch (\Exception $exception){
+            return $this->apiFailed("", [],$exception->getMessage());
+        }
     }
 
     /**

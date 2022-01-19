@@ -37,9 +37,9 @@ class FileController extends Controller
      */
     public function upload(Product $product, Request $request): \Illuminate\Http\JsonResponse
     {
-//        $request->validate([
-//            'file' => ['required', 'mimes:zip,rar']
-//        ]);
+        $request->validate([
+            'file' => ['required', 'mimes:zip,rar']
+        ]);
         try {
             $file = new File();
             $file->name = $request->file('file')->getClientOriginalName();

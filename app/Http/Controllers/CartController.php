@@ -6,7 +6,7 @@ use App\Models\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 
-class   CartController extends Controller
+class CartController extends Controller
 {
 
     use \App\Http\Traits\ApiResponse;
@@ -16,9 +16,9 @@ class   CartController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function index(Request $request)
     {
-        return response()->json(Cart::query()->with(['product', 'product.thumbnailImage'])->where('user_id',$id)->get());
+        return response()->json(Cart::query()->where("user_id",$request->user()->id)->where("active", "1")->get());
     }
 
     /**

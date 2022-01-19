@@ -18,4 +18,9 @@ class Order extends Model
     {
         return $this->BelongsTo(User::class);
     }
+
+    public function getIdAttribute($value)
+    {
+        return str_pad($value,10,"0",STR_PAD_LEFT);
+    }
 }

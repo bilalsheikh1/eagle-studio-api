@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\ApiResponse;
 use App\Models\Purchase;
 use Illuminate\Http\Request;
 
 class PurchaseController extends Controller
 {
+    use ApiResponse;
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +17,8 @@ class PurchaseController extends Controller
      */
     public function index()
     {
-        //
+        $purchases = Purchase::query()->with(["user", "products"])->get();
+        return $this->apiSuccess("", $purchases);
     }
 
     /**

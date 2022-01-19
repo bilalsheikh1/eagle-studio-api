@@ -55,7 +55,7 @@ class PaypalController extends Controller
 
             $order->status = true;
             $order->total = $request->cart["price"];
-            $order->user()->associate($request->user()->id);
+//            $order->user()->associate($request->user()->id);
             $order->save();
 
             $order->products()->attach($request->product_ids);
@@ -85,9 +85,10 @@ class PaypalController extends Controller
 
             $paypal->save();
 
-            Cart::query()->where("id", $request->cart["id"])->update(["active" => "0"]);
+            Cart::query()->where("user_id",$request->user()->id)->update(["active" => "0"]);
+            $cart = Cart::query()->where("user_id",$request->user()->id)->where("active", "1")->first();
 
-            return $this->apiSuccess("Payment successful", []);;
+            return $this->apiSuccess("Payment successful", $cart);;
         } catch (\Exception $exception) {
             return $this->apiFailed($exception->getMessage(), []);
         }
