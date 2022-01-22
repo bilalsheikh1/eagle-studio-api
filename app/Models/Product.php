@@ -82,4 +82,9 @@ class Product extends Model
         return $this->belongsToMany(Purchase::class);
     }
 
+    public function wishList()
+    {
+        return $this->belongsToMany(Wishlist::class);
+    }
+
 }

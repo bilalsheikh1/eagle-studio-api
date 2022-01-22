@@ -190,14 +190,14 @@ class ProductController extends Controller
             'product_subcategory.*' => ['required', 'exists:product_subcategories,id'],
             'operating_systems.*' => ['required', 'exists:operating_systems,id'],
             'framework' => ['required', 'exists:frameworks,id'],
-            'description' => ['required'],
+            'features' => ['required'],
+//            'description' => ['required'],
         ]);
 
         try {
+            return \response()->json($request->features);
             $product = new Product;
-            $product->fill($request->except(['features', 'description']));
-            $product->features = json_encode($request->features);
-            $product->description = json_encode($request->description);
+            $product->fill($request->all());
             $product->user()->associate($request->user());
             $product->productTemplate()->associate($request->product_template);
             $product->framework()->associate($request->framework);
@@ -292,10 +292,6 @@ class ProductController extends Controller
                 $product->operatingSystems()->sync($request->operating_systems);
 
             $product->fill($request->all());
-            if(isset($request->features))
-                $product->features = json_encode($request->features);
-            if(isset($request->description))
-                $product->description = json_encode($request->description);
             $product->save();
             return response()->json($product);
         } catch (\Exception $exception) {

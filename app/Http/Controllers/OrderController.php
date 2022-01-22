@@ -18,9 +18,10 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         try {
-            $orders = Order::query()->with(["products", "user"])->whereHas("products", function ($q) use ($request){
+            $orders = Order::query()->with("products")->whereHas("products", function ($q) use ($request){
                 $q->where("user_id", $request->user()->id);
             })->get();
+
             return $this->apiSuccess("", $orders);
         } catch (\Exception $exception){
             return $this->apiFailed("", [],$exception->getMessage());

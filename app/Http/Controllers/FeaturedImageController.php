@@ -31,21 +31,32 @@ class FeaturedImageController extends Controller
 //        $request->validate([
 //            'file' => ['required', 'dimensions:width=200,height=100']
 //        ]);
+//        try {
+//            $product->featuredImage()->delete();
+//            $image = $request->file;  // your base64 encoded
+//            $image = str_replace('data:image/png;base64,', '', $image);
+//            $image = str_replace(' ', '+', $image);
+//            $imageName =  Carbon::now()->timestamp.'.'.'png';
+//            if(\File::put( storage_path('app/public/featured_images'). '/' . $imageName, base64_decode($image)) > 0) {
+//                $featuredImage = new FeaturedImage;
+//                $featuredImage->name = $imageName;
+//                $featuredImage->path = "featured_images/{$imageName}";
+////                $featuredImage->path = $request->file('file')->storeAs('featured_images', $featuredImage->name, 'public');
+//                $featuredImage->url = Storage::disk('public')->url($featuredImage->path);
+//                $product->featuredImage()->save($featuredImage);
+//                return response()->json($image);
+//            }
+//        } catch (\Exception $exception) {
+//            return response()->json($exception->getMessage(), 500);
+//        }
         try {
             $product->featuredImage()->delete();
-            $image = $request->file;  // your base64 encoded
-            $image = str_replace('data:image/png;base64,', '', $image);
-            $image = str_replace(' ', '+', $image);
-            $imageName =  Carbon::now()->timestamp.'.'.'png';
-            if(\File::put( storage_path('app/public/featured_images'). '/' . $imageName, base64_decode($image)) > 0) {
-                $featuredImage = new FeaturedImage;
-                $featuredImage->name = $imageName;
-                $featuredImage->path = "featured_images/{$imageName}";
-//                $featuredImage->path = $request->file('file')->storeAs('featured_images', $featuredImage->name, 'public');
-                $featuredImage->url = Storage::disk('public')->url($featuredImage->path);
-                $product->featuredImage()->save($featuredImage);
-                return response()->json($image);
-            }
+            $image = new FeaturedImage;
+            $image->name = $request->file('file')->getClientOriginalName();
+            $image->path = $request->file('file')->storeAs('featured_images', $image->name, 'public');
+            $image->url = Storage::disk('public')->url($image->path);
+            $product->featuredImage()->save($image);
+            return response()->json($image);
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 500);
         }

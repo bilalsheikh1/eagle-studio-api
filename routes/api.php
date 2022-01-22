@@ -59,6 +59,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('/{productCategory}/operating_system', OperatingSystemController::class);
     Route::resource('/{productTemplate}/product_subcategory',ProductSubcategoryController::class);
     Route::resource('become-seller', \App\Http\Controllers\BecomeSellerController::class);
+    Route::resource("wishlist", \App\Http\Controllers\WishlistController::class);
 
     Route::post('get/approved-products/{product}',[ProductController::class,'approvedProduct']);
     Route::post('get-product/{product}',[ProductController::class,'getProduct']);
@@ -141,6 +142,8 @@ Route::middleware('auth:sanctum')->prefix('admin')->name('admin.')->group(functi
     Route::resource('product_category', ProductCategoryController::class);
     Route::resource('product_template', ProductTemplateController::class);
 
+    //GET USERS
+    Route::post('/get-users', [UserController::class,'getUsers']);
 
     //REQUESTS ROUTES
     Route::post('get/approved-products/{product}',[ProductController::class,'approvedProduct']);

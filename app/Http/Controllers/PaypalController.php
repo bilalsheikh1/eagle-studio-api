@@ -55,7 +55,6 @@ class PaypalController extends Controller
 
             $order->status = true;
             $order->total = $request->cart["price"];
-//            $order->user()->associate($request->user()->id);
             $order->save();
 
             $order->products()->attach($request->product_ids);
