@@ -38,8 +38,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 Route::resource('product_template', ProductTemplateController::class);
 Route::resource('product_category', ProductCategoryController::class);
 Route::resource('framework', FrameworkController::class);
-Route::get('get-template/product', [ProductController::class, 'index']);
 Route::resource('product', ProductController::class)->except(['store', 'update', 'destroy']);
+Route::get('get-template/product', [ProductController::class, 'index']);
 //
 Route::post('/template-product', [ProductController::class, 'getProductByTemplate']);
 Route::post('/getFilterProduct',[ProductController::class,'getFilterProduct']);
@@ -53,7 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //Route::resource('product_category', ProductCategoryController::class);
     //Route::resource('framework', FrameworkController::class);
     Route::resource('system-settings', \App\Http\Controllers\SystemSettingController::class);
-    Route::resource('product', ProductController::class);
+    Route::resource('product', ProductController::class)->only(['store', 'update', 'destroy']);
     Route::resource('slider', sliderController::class);
     Route::resource('user', UserController::class);
     Route::resource('/{productCategory}/operating_system', OperatingSystemController::class);
