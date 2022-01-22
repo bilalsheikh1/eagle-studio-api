@@ -195,7 +195,6 @@ class ProductController extends Controller
         ]);
 
         try {
-            return \response()->json($request->features);
             $product = new Product;
             $product->fill($request->all());
             $product->user()->associate($request->user());
