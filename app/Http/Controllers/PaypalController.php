@@ -63,7 +63,8 @@ class PaypalController extends Controller
             $purchase->total = $request->cart["price"];
             $purchase->user()->associate($request->user()->id);
             $purchase->save();
-            $purchase->product()->attach($request->product_ids);
+
+            $purchase->products()->attach($request->product_ids);
 
             $paypal->paypal_id = $request->paypalData["paypal_id"];
             $paypal->intent = $request->paypalData["intent"];
