@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Crypt;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -57,13 +59,24 @@ class User extends Authenticatable
         return $this->hasMany(Slider::class);
     }
 
-    public function orders()
+    public function order()
     {
-        return $this->belongsToMany(Order::class);
+        return $this->hasMany(Order::class);
     }
 
     public function wishList()
     {
         return $this->hasMany(Wishlist::class);
     }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->toDayDateTimeString();
+    }
+
+//    public function getIdAttribute($value)
+//    {
+//        return Crypt::encrypt($value);
+//    }
+
 }

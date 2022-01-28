@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\FeaturedImage;
-use App\Models\File;
+use App\Http\Traits\ApiResponse;
 use App\Models\Product;
-use App\Models\ProductSubcategory;
 use App\Models\ProductTemplate;
-use App\Models\Screenshot;
-use App\Models\ThumbnailImage;
-use http\Env\Response;
+use App\Models\ProductView;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
+    use ApiResponse;
+
     /**
      * Display a listing of the resource.
      *
@@ -57,9 +55,9 @@ class ProductController extends Controller
                 $product->whereIn('product_category_id', $request->filters['product_category']);
             if(isset($request->filters['title']))
                 $product->where('title', 'LIKE', '%'.$request->filters['title'][0].'%');
-            return \response()->json($product->paginate($request->pagination['pageSize']));
-        } catch (\Exception $exception){
-            return \response()->json($exception->getMessage(), 500);
+            return response()->json($product->paginate($request->pagination['pageSize']));
+        } catch (Exception $exception){
+            return response()->json($exception->getMessage(), 500);
         }
     }
 
@@ -75,8 +73,8 @@ class ProductController extends Controller
             $product->status = $status;
             $product->update();
             $status = ( $status == "0") ? "been pending" : ($status == "1" ? "been approved" : ($status == "2" ? "been rejected" : 'not update'));
-            return \response()->json("product has {$status}");
-        } catch (\Exception $exception){
+            return response()->json("product has {$status}");
+        } catch (Exception $exception){
             return response()->json($exception->getMessage(), 500);
         }
     }
@@ -94,9 +92,9 @@ class ProductController extends Controller
                 $product->whereIn('product_category_id', $request->filters['product_category']);
             if(isset($request->filters['title']))
                 $product->where('title','LIKE', '%'.$request->filters['title'][0].'%');
-            return \response()->json($product->paginate($request->pagination['pageSize']));
-        } catch (\Exception $exception){
-            return \response()->json($exception->getMessage(), 500);
+            return response()->json($product->paginate($request->pagination['pageSize']));
+        } catch (Exception $exception){
+            return response()->json($exception->getMessage(), 500);
         }
     }
 
@@ -110,7 +108,7 @@ class ProductController extends Controller
             if(count($product) > 0)
                 return response()->json($product[0]);
             return response()->json("data not found");
-        } catch (\Exception $exception){
+        } catch (Exception $exception){
             return response()->json($exception->getMessage(), 500);
         }
     }
@@ -153,7 +151,7 @@ class ProductController extends Controller
                     return response()->json($product[0]);
             }
             return response()->json([]);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json($exception->getMessage(), 500);
         }
     }
@@ -168,7 +166,7 @@ class ProductController extends Controller
             if(count($product) > 0)
                 return response()->json("data not found");
             return response()->json([]);
-        } catch (\Exception $exception){
+        } catch (Exception $exception){
             return response()->json($exception->getMessage(), 500);
         }
     }
@@ -205,7 +203,7 @@ class ProductController extends Controller
             $product->productSubcategory()->sync($request->product_subcategory);
             $product->operatingSystems()->sync($request->operating_systems);
             return response()->json($product);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json($exception->getMessage(), 500);
         }
     }
@@ -217,7 +215,7 @@ class ProductController extends Controller
         ]);
         try{
             return response()->json(Product::query()->with(['thumbnailImage', 'productCategory'])->where('title', 'LIKE', '%'. $request->title .'%')->get());
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json($exception->getMessage(),500);
         }
     }
@@ -226,8 +224,8 @@ class ProductController extends Controller
     {
         try {
             return response()->json($product->load(['productTemplate', 'productCategory', 'productSubcategory', 'operatingSystems', 'framework', 'featuredImage', 'screenshots', 'thumbnailImage', 'file','user']));
-        } catch (\Exception $exception){
-            return \response()->json($exception->getMessage(), 500);
+        } catch (Exception $exception){
+            return response()->json($exception->getMessage(), 500);
         }
     }
 
@@ -238,10 +236,13 @@ class ProductController extends Controller
     public function show(Product $product): \Illuminate\Http\JsonResponse
     {
         try {
-            if($product->status == 1)
-                return response()->json($product->load(['productTemplate', 'productCategory', 'productSubcategory', 'operatingSystems', 'framework', 'featuredImage', 'screenshots', 'thumbnailImage', 'file','user']));
+            if($product->status == 1) {
+                $product->productViews()->create(["views" => 1, "product_id" => $product->id]);
+                $product->update();
+                return response()->json($product->load(['productTemplate', 'productCategory', 'productSubcategory', 'operatingSystems', 'framework', 'featuredImage', 'screenshots', 'thumbnailImage', 'file', 'user']));
+            }
             return response()->json([]);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json($exception->getMessage());
         }
     }
@@ -250,7 +251,7 @@ class ProductController extends Controller
     {
         try {
             return response()->json($product->load(['productTemplate', 'productCategory', 'productSubcategory', 'operatingSystems', 'framework', 'featuredImage', 'screenshots', 'thumbnailImage', 'file','user'])->where('status', 1));
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json($exception->getMessage());
         }
     }
@@ -293,7 +294,7 @@ class ProductController extends Controller
             $product->fill($request->all());
             $product->save();
             return response()->json($product);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json($exception->getMessage(), 500);
         }
     }
@@ -314,7 +315,7 @@ class ProductController extends Controller
             if($request->Subcategory)
                 $product->where('product_subcategory_id', $request->Subcategory['id']);
             return response()->json($product->get());
-        }catch (\Exception $exception){
+        }catch (Exception $exception){
             return response()->json($exception->getMessage());
         }
     }
@@ -330,8 +331,33 @@ class ProductController extends Controller
         try {
             $product->delete();
             return response()->json("Product has been deleted.");
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json($exception->getMessage(), 500);
+        }
+    }
+
+    public function getProductsViews(Request $request)
+    {
+        try {
+//            $product = Product::query()->with(["views" => function ($q) use ($request){
+//                $q->where("created_at", Carbon::now()->subYear());
+//            }])->get();
+//            $viewsType = Carbon::now()->subYear();
+//            if(isset($request->viewsType))
+//            {
+//                if($request->viewsType == "month")
+//                    $viewsType = Carbon::now()->month();
+//                if($request->viewsType == "daily")
+//                    $viewsType = Carbon::now();
+//            }
+//            $data = DB::select("SELECT * FROM (SELECT COUNT(pv.views) , p.title, CONCAT(MONTHNAME(pv.`created_at`), ' ' ,YEAR(pv.`created_at`)) FROM `products` p JOIN `product_views` pv ON (p.`id` = pv.`product_id`) WHERE pv.`created_at` >= {$viewsType}  AND p.`user_id` = {$request->user()->id} GROUP BY YEAR(pv.`created_at`)) AS a ");
+            $condition = "1";
+            if(isset($request->product_id))
+                $condition = "and product_id = {$request->product_id}";
+            $data = DB::select("SELECT CONVERT(DAY(demo.d), NCHAR) AS date, IF(virtual.views, virtual.views, 0) AS views FROM (SELECT  DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH)) + INTERVAL t.n - 1 DAY AS d, t.n AS n FROM tally t) AS  demo LEFT JOIN (SELECT COUNT(pv.views) AS views,DATE(pv.created_at) AS DATE FROM `products` p JOIN `product_views` pv ON (p.`id` = pv.`product_id`) WHERE pv.`created_at` >= DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH)) AND 1 AND p.`user_id` = 3 GROUP BY DATE(pv.`created_at`)) AS virtual ON (demo.d = DATE(virtual.date)) WHERE demo.n <= DATEDIFF(DATE(DATE_SUB(NOW(), INTERVAL 2 DAY)), DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH))) + 1 ORDER BY demo.d");
+            return $this->apiSuccess("",$data);
+        } catch (Exception $exception){
+            return $this->apiFailed("",[],$exception->getMessage());
         }
     }
 

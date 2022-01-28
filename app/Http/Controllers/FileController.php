@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\ApiResponse;
 use App\Models\File;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class FileController extends Controller
 {
+
+    use ApiResponse;
 
     public function index(Product $product)
     {
@@ -27,6 +31,24 @@ class FileController extends Controller
             return response()->json('');
         } catch (\Exception $exception){
             return response()->json($exception->getMessage(), 500);
+        }
+    }
+
+    public function downloadFileByProductID($id)
+    {
+        Validator::make(["id"],[
+            "id" => ["required", "exists:products,id"]
+        ]);
+        try {
+
+            $product = Product::query()->with("file")->where("id", $id)->first();
+            if ($product->file != null && $product->file != '') {
+                $path = storage_path('app/' . $product->file->path);
+                return $this->apiDownloadSuccess($path, $product->file->name);
+            }
+//            return;
+        } catch (Exception $exception){
+            return $this->apiFailed("",[],$exception->getMessage());
         }
     }
 

@@ -16,6 +16,11 @@ trait ApiResponse
         return response()->json($apiResponse, $statusCode);
     }
 
+    public function apiDownloadSuccess($path,$file)
+    {
+        return response()->download($path,$file);
+    }
+
     public function apiFailed($message = "", $data = [], $errMess = "", $status = false, $statusCode = 500)
     {
         $apiResponse = new \stdClass();

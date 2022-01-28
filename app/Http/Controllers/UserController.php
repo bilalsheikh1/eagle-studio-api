@@ -37,6 +37,13 @@ class UserController extends Controller
 //        return response()->json($request->user()->wi);
     }
 
+    public function getUserDetails($id)
+    {
+        $user = User::query()->where('id', Crypt::decrypt($id))->first();
+        return $user->load("products");
+        return $user;
+    }
+
     public function getUsers(Request $request)
     {
         return response()->json(User::query()->where('is_admin', '!=' , '1')->where('id', '!=',$request->user()->id)->paginate($request->pageSize));

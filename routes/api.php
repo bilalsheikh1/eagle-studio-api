@@ -61,6 +61,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('become-seller', \App\Http\Controllers\BecomeSellerController::class);
     Route::resource("wishlist", \App\Http\Controllers\WishlistController::class);
 
+    Route::get("/get-earnings",[ProductController::class, "getProductsViews"]);
+
+    //DOWNLOAD PRODUCT BY PRODUCT ID
+    Route::post("product-download/{id}",[FileController::class, "downloadFileByProductID"]);
+
     Route::post('get/approved-products/{product}',[ProductController::class,'approvedProduct']);
     Route::post('get-product/{product}',[ProductController::class,'getProduct']);
     Route::post('add-product', [ProductController::class,'store']);
@@ -98,7 +103,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user-profile', [\App\Http\Controllers\UserController::class,'getProfile']);
     Route::post('/get-users', [UserController::class,'getUsers']);
     Route::post('/get-filtered-users', [UserController::class,'getFilteredUsers']);
-    Route::post('/update-user-status/{user}/{status}', [UserController::class, 'updateStatus']);
 
     Route::get('/{product}/featuredImage', [FeaturedImageController::class, 'index']);
     Route::post('/{product}/featuredImage', [FeaturedImageController::class, 'upload']);
@@ -141,6 +145,13 @@ Route::middleware('auth:sanctum')->prefix('admin')->name('admin.')->group(functi
     Route::resource('framework', FrameworkController::class);
     Route::resource('product_category', ProductCategoryController::class);
     Route::resource('product_template', ProductTemplateController::class);
+    Route::resource("order", \App\Http\Controllers\OrderController::class);
+
+    //GET USER DETAILS
+    Route::post("user-details/{id}", [UserController::class,'getUserDetails']);
+
+    //UPDATE USER STATUS
+    Route::post('/update-user-status/{user}/{status}', [UserController::class, 'updateStatus']);
 
     //GET USERS
     Route::post('/get-users', [UserController::class,'getUsers']);
@@ -150,6 +161,9 @@ Route::middleware('auth:sanctum')->prefix('admin')->name('admin.')->group(functi
 
     //REQUEST PRODUCTS
     Route::get('/product-request/{status}',[ProductController::class, 'getRequests']);
+
+    //GET ORDERS
+    Route::get("/get-orders",[\App\Http\Controllers\OrderController::class, "getOrders"]);
 
     //GET PRODUCT BY ID
     Route::post('get-product/{product}',[ProductController::class,'getProduct']);

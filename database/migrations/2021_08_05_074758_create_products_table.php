@@ -24,6 +24,7 @@ class CreateProductsTable extends Migration
             $table->string('app_store_link')->nullable();
             $table->double('single_app_license')->default(0);
             $table->double('multi_app_license')->default(0);
+            $table->double('reskinned_app_license')->default(0);
             $table->string('development_hours')->nullable();
             $table->foreignId('product_template_id');
             $table->foreignId('product_category_id');

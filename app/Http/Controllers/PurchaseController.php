@@ -15,10 +15,14 @@ class PurchaseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $purchases = Purchase::query()->with(["user", "products"])->get();
-        return $this->apiSuccess("", $purchases);
+        $data = Purchase::query()->has("products")->where("user_id", "3")->orderByDesc("id")->get();
+        foreach ($data as $index => $v)
+        {
+            $data[$index]->products = $v->products;
+        }
+        return $this->apiSuccess("", $data);
     }
 
     /**
