@@ -21,8 +21,8 @@ class ProductController extends Controller
      */
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
-        try {
-            if(isset($request->urn)) {
+//        try {
+            if( isset($request->urn)) {
                 $product = ProductTemplate::query()->where('urn','like','%'. $request->urn .'%')->with(['products' => function($q) {
                     $q->where('status','1');
                 }, 'products.productTemplate', 'products.thumbnailImage'])->get()->pluck('products');
@@ -30,15 +30,26 @@ class ProductController extends Controller
                     return response()->json($product[0]);
                 return response()->json([]);
             }
-            if($request->status == "draft")
+//                        else
+//                return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->paginate($request->pageSize));
+//        } catch (\Exception $exception) {
+//            return response()->json($exception->getMessage(), 500);
+//        }
+    }
+
+    public function getProductsByStatus(Request $request)
+    {
+        $request->validate([
+           "status" => ["required", "string"]
+        ]);
+        try {
+            if ($request->status == "draft")
                 return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('status', '0')->where('user_id', $request->user()->id)->get());
-            else if($request->status == "live")
-                return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('status', '=','1')->where('user_id', $request->user()->id)->get());
-            else if($request->status == "all")
+            else if ($request->status == "live")
+                return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('status', '1')->where('user_id', $request->user()->id)->get());
+            else if ($request->status == "all")
                 return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('user_id', $request->user()->id)->get());
-            else
-                return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->paginate($request->pageSize));
-        } catch (\Exception $exception) {
+        } catch (Exception $exception){
             return response()->json($exception->getMessage(), 500);
         }
     }

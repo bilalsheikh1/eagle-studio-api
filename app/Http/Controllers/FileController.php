@@ -7,7 +7,6 @@ use App\Models\File;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 
 class FileController extends Controller
 {
@@ -34,19 +33,18 @@ class FileController extends Controller
         }
     }
 
-    public function downloadFileByProductID($id)
+    public function downloadFileByProductID(Request $request)
     {
-        Validator::make(["id"],[
-            "id" => ["required", "exists:products,id"]
+        $request->validate([
+           "id" => ["required", "exists:products,id"]
         ]);
         try {
-
             $product = Product::query()->with("file")->where("id", $id)->first();
             if ($product->file != null && $product->file != '') {
                 $path = storage_path('app/' . $product->file->path);
                 return $this->apiDownloadSuccess($path, $product->file->name);
             }
-//            return;
+            return;
         } catch (Exception $exception){
             return $this->apiFailed("",[],$exception->getMessage());
         }

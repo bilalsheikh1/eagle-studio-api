@@ -63,8 +63,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get("/get-earnings",[ProductController::class, "getProductsViews"]);
 
+    //GET PRODUCTS BY STATUS
+    Route::post("get-products-status", [ProductController::class, "getProductsByStatus"]);
+
     //DOWNLOAD PRODUCT BY PRODUCT ID
-    Route::post("product-download/{id}",[FileController::class, "downloadFileByProductID"]);
+    Route::post("product-download",[FileController::class, "downloadFileByProductID"]);
 
     Route::post('get/approved-products/{product}',[ProductController::class,'approvedProduct']);
     Route::post('get-product/{product}',[ProductController::class,'getProduct']);
