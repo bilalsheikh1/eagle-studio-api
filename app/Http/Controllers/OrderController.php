@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Traits\ApiResponse;
 use App\Models\Order;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -58,9 +59,20 @@ class OrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function getOrderByUser($id, Request $request)
     {
-        //
+        try {
+            $order = Order::query()->with("user")->where("user_id", $id);
+            if($request->orderType == "complete-order")
+                $order->where("status", "1");
+            else if($request->orderType == "cancel-order")
+                $order->where("status", "0");
+            else if($request->orderType == "pending-order")
+                $order->where("status", "2");
+            return $this->apiSuccess("",$order->get());
+        } catch (Exception $exception){
+            return $this->apiFailed("",[],$exception->getMessage());
+        }
     }
 
     /**

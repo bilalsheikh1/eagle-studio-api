@@ -147,6 +147,9 @@ Route::middleware('auth:sanctum')->prefix('admin')->name('admin.')->group(functi
     Route::resource('product_template', ProductTemplateController::class);
     Route::resource("order", \App\Http\Controllers\OrderController::class);
 
+    //DASHBOARD DATA
+    Route::post("/dashboard", [\App\Http\Controllers\DashbaordController::class, "index"]);
+
     //GET PRODUCT BY USER-ID
     Route::post("get-user-products/{user}", [UserController::class,"getProductsByUser"]);
 
@@ -164,6 +167,9 @@ Route::middleware('auth:sanctum')->prefix('admin')->name('admin.')->group(functi
 
     //REQUEST PRODUCTS
     Route::get('/product-request/{status}',[ProductController::class, 'getRequests']);
+
+    //GET ORDERS BY USER
+    Route::post('/get-order-by-user/{user}',[\App\Http\Controllers\OrderController::class, 'getOrderByUser']);
 
     //GET ORDERS
     Route::get("/get-orders",[\App\Http\Controllers\OrderController::class, "getOrders"]);

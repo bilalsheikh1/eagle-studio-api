@@ -21,7 +21,7 @@ class ProductController extends Controller
      */
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
-//        try {
+        try {
             if( isset($request->urn)) {
                 $product = ProductTemplate::query()->where('urn','like','%'. $request->urn .'%')->with(['products' => function($q) {
                     $q->where('status','1');
@@ -30,11 +30,11 @@ class ProductController extends Controller
                     return response()->json($product[0]);
                 return response()->json([]);
             }
-//                        else
-//                return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->paginate($request->pageSize));
-//        } catch (\Exception $exception) {
-//            return response()->json($exception->getMessage(), 500);
-//        }
+            else
+                return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->paginate($request->pageSize));
+        } catch (Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 
     public function getProductsByStatus(Request $request)
