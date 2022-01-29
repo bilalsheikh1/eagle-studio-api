@@ -97,4 +97,9 @@ class Product extends Model
     {
         return Carbon::parse($value)->toDayDateTimeString();
     }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->toDayDateTimeString();
+    }
 }

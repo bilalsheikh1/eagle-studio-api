@@ -74,6 +74,11 @@ class User extends Authenticatable
         return Carbon::parse($value)->toDayDateTimeString();
     }
 
+    public function getUpdatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->toDayDateTimeString();
+    }
+
 //    public function getIdAttribute($value)
 //    {
 //        return Crypt::encrypt($value);

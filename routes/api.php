@@ -49,9 +49,6 @@ Route::get('get-slider', [sliderController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    //Route::resource('product_template', ProductTemplateController::class);
-    //Route::resource('product_category', ProductCategoryController::class);
-    //Route::resource('framework', FrameworkController::class);
     Route::resource('system-settings', \App\Http\Controllers\SystemSettingController::class);
     Route::resource('product', ProductController::class)->only(['store', 'update', 'destroy']);
     Route::resource('slider', sliderController::class);
@@ -149,6 +146,9 @@ Route::middleware('auth:sanctum')->prefix('admin')->name('admin.')->group(functi
     Route::resource('product_category', ProductCategoryController::class);
     Route::resource('product_template', ProductTemplateController::class);
     Route::resource("order", \App\Http\Controllers\OrderController::class);
+
+    //GET PRODUCT BY USER-ID
+    Route::post("get-user-products/{user}", [UserController::class,"getProductsByUser"]);
 
     //GET USER DETAILS
     Route::post("user-details/{id}", [UserController::class,'getUserDetails']);

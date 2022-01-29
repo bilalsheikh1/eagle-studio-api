@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\ApiResponse;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    use ApiResponse;
 
     /**
      * Display a listing of the resource.
@@ -39,9 +41,9 @@ class UserController extends Controller
 
     public function getUserDetails($id)
     {
-        $user = User::query()->where('id', Crypt::decrypt($id))->first();
-        return $user->load("products");
-        return $user;
+        $user = User::query()->where('id', $id)->first();
+        $user->load(["products", "becomeSeller", "order"]);
+        return $this->apiSuccess("",$user);
     }
 
     public function getUsers(Request $request)
@@ -210,6 +212,16 @@ class UserController extends Controller
             return response()->json("user {$user->username} has been updated");
         }catch (\Exception $exception){
             return response()->json($exception->getMessage());
+        }
+    }
+
+    public function getProductsByUser(User $user)
+    {
+        try {
+            $data = $user->products->load(["framework", "operatingSystems","thumbnailImage","productCategory","productTemplate"]);
+            return $this->apiSuccess("",$data);
+        } catch (Exception $exception){
+            $this->apiFailed("",[],$exception->getMessage());
         }
     }
 
