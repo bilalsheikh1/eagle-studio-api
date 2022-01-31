@@ -48,7 +48,24 @@ class UserController extends Controller
 
     public function getUsers(Request $request)
     {
-        return response()->json(User::query()->where('is_admin', '!=' , '1')->where('id', '!=',$request->user()->id)->paginate($request->pageSize));
+        try {
+//            return $request->type;
+//            return $request->type != "all";
+            if($request->type == "all") {;
+                $users = User::query()->where('is_admin', '!=', '1')->where('id', '!=', $request->user()->id)->paginate($request->pageSize);
+                return $this->apiSuccess("", $users);
+            }
+            else if($request->type == "active") {
+                $users = User::query()->where('is_admin', '!=', '1')->where('id', '!=', $request->user()->id)->where("active", 1)->paginate($request->pageSize);
+                return $this->apiSuccess("", $users);
+            }
+            else if($request->type == "deactive") {
+                $users = User::query()->where('is_admin', '!=', '1')->where('id', '!=', $request->user()->id)->where("active", 0)->paginate($request->pageSize);
+                return $this->apiSuccess("", $users);
+            }
+        } catch (Exception $exception) {
+            $this->apiFailed("",[],$exception->getMessage());
+        }
     }
 
     public function getFilteredUsers(Request $request): \Illuminate\Http\JsonResponse
