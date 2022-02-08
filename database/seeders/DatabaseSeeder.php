@@ -20,5 +20,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ProductTemplateSeeder::class);
         $this->call(SystemSettingSeeder::class);
         $this->call(TallySeeder::class);
+        $this->call(PrivacyPolicySeeder::class);
     }
 }

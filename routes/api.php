@@ -47,6 +47,9 @@ Route::post('/product/get-filtered-products', [ProductController::class, 'getFil
 Route::post('/get-front-settings', [\App\Http\Controllers\SystemSettingController::class,'getFrontSettings']);
 Route::get('get-slider', [sliderController::class, 'index']);
 
+//GET PRIVACY POLICY
+Route::get('privacyPolicy', [\App\Http\Controllers\PrivacyPolicyContorller::class,'index']);
+
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::resource('system-settings', \App\Http\Controllers\SystemSettingController::class);
@@ -128,6 +131,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource("order", \App\Http\Controllers\OrderController::class);
     Route::resource("purchase", \App\Http\Controllers\PurchaseController::class);
 
+
+
 });
 
     //ADMIN LOGIN
@@ -189,6 +194,9 @@ Route::middleware('auth:sanctum')->prefix('admin')->name('admin.')->group(functi
 
     //UPDATE REQUEST
     Route::put('{product}/product-request/{status}', [ProductController::class, 'mutateRequest']);
+
+    //PRIVACY & POLICY
+    Route::resource("privacyPolicy", \App\Http\Controllers\PrivacyPolicyContorller::class);
 
     //LOGOUT
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
