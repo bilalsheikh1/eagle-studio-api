@@ -21,5 +21,6 @@ class DatabaseSeeder extends Seeder
         $this->call(SystemSettingSeeder::class);
         $this->call(TallySeeder::class);
         $this->call(PrivacyPolicySeeder::class);
+        $this->call(TermsConditionSeeder::class);
     }
 }

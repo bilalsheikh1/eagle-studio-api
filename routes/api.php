@@ -50,6 +50,9 @@ Route::get('get-slider', [sliderController::class, 'index']);
 //GET PRIVACY POLICY
 Route::get('privacyPolicy', [\App\Http\Controllers\PrivacyPolicyContorller::class,'index']);
 
+//GET TERMS CONDITIONS
+Route::get("termsCondition", [\App\Http\Controllers\TermsConditionController::class, "index"]);
+
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::resource('system-settings', \App\Http\Controllers\SystemSettingController::class);
@@ -152,6 +155,10 @@ Route::middleware('auth:sanctum')->prefix('admin')->name('admin.')->group(functi
     Route::resource('product_template', ProductTemplateController::class);
     Route::resource("order", \App\Http\Controllers\OrderController::class);
     Route::resource("purchase", \App\Http\Controllers\PurchaseController::class);
+    Route::resource("privacyPolicy", \App\Http\Controllers\PrivacyPolicyContorller::class);
+    Route::resource("termsCondition", \App\Http\Controllers\TermsConditionController::class);
+
+    Route::put("terms-update", [\App\Http\Controllers\TermsConditionController::class, "update"]);
 
     //FILTERED ORDERS
     Route::post("/filter-order", [\App\Http\Controllers\OrderController::class, "getFilteredOrders"]);
@@ -194,9 +201,6 @@ Route::middleware('auth:sanctum')->prefix('admin')->name('admin.')->group(functi
 
     //UPDATE REQUEST
     Route::put('{product}/product-request/{status}', [ProductController::class, 'mutateRequest']);
-
-    //PRIVACY & POLICY
-    Route::resource("privacyPolicy", \App\Http\Controllers\PrivacyPolicyContorller::class);
 
     //LOGOUT
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
