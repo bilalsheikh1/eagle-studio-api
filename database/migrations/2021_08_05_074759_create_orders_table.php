@@ -15,7 +15,7 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->boolean('status')->default(false);
+            $table->boolean('status')->default('0')->comment("status = 0 in-progress, 1 completed, 2 cancel");
             $table->string('total');
             $table->foreignId("user_id")->constrained()->cascadeOnDelete();
             $table->timestamps();

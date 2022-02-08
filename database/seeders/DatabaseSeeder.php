@@ -19,5 +19,6 @@ class DatabaseSeeder extends Seeder
         $this->call(FrameworkSeeder::class);
         $this->call(ProductTemplateSeeder::class);
         $this->call(SystemSettingSeeder::class);
+        $this->call(TallySeeder::class);
     }
 }

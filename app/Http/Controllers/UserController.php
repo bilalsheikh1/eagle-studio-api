@@ -49,9 +49,7 @@ class UserController extends Controller
     public function getUsers(Request $request)
     {
         try {
-//            return $request->type;
-//            return $request->type != "all";
-            if($request->type == "all") {;
+            if($request->type == "all") {
                 $users = User::query()->where('is_admin', '!=', '1')->where('id', '!=', $request->user()->id)->paginate($request->pageSize);
                 return $this->apiSuccess("", $users);
             }

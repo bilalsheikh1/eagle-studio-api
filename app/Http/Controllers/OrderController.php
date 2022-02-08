@@ -35,22 +35,24 @@ class OrderController extends Controller
 
     public function getOrders(Request $request)
     {
+        $request->validate([
+            "type" => ["required", "string"]
+        ]);
         try {
-            $orders = Order::query()->with("user")->paginate($request->pageSize);
-            return $this->apiSuccess("",$orders);
+            if($request->type == "all")
+                $orders = Order::query()->with("user");
+            else if ($request->type == "in-progress")
+                $orders = Order::query()->with("user")->where("status", 0);
+            else if($request->type == "cancel")
+                $orders = Order::query()->with("user")->where("status", 2);
+            else if($request->type == "completed")
+                $orders = Order::query()->with("user")->where("status", 1);
+            if(isset($request->filters) && $request->filters != "null" && $request->filters != "undefined")
+                $orders->where("id", $request->filters);
+            return $this->apiSuccess("",$orders->paginate($request->pageSize));
         } catch (Exception $exception){
             return $this->apiFailed("", [],$exception->getMessage());
         }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -92,15 +94,28 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Order $order)
+    public function getFilteredOrders(Request $request)
     {
-        //
+        $request->validate([
+            "id" => ["nullable", "exists:orders"]
+        ]);
+        try {
+            $orders = Order::query()->with("user");
+            if($request->type == "cancel")
+                $orders->where("status", 2);
+            else if($request->type == "completed")
+                $orders->where("status", 1);
+            else if ($request->type == "in-progress")
+                $orders->where("status", 0);
+
+            if(!empty($request->id) && $request->id)
+                $orders->where("id", $request->id);
+            if(!empty($request->date) && $request->date)
+                $orders->whereDate("created_at", '>=', $request->date[0])->whereDate("created_at", '<=',$request->date[1]);
+            return $this->apiSuccess("",$orders->paginate($request->pageSize));
+        } catch (Exception $exception){
+            return $this->apiFailed("",[],$exception->getMessage());
+        }
     }
 
     /**
