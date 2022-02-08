@@ -49,7 +49,7 @@ class OrderController extends Controller
                 $orders = Order::query()->with("user")->where("status", 1);
             if(isset($request->filters) && $request->filters != "null" && $request->filters != "undefined")
                 $orders->where("id", $request->filters);
-            return $this->apiSuccess("",$orders->paginate($request->pageSize));
+            return $this->apiSuccess("",$orders->where("created_at",'>=',DB::raw("now() - interval 1 month"))->paginate($request->pageSize));
         } catch (Exception $exception){
             return $this->apiFailed("", [],$exception->getMessage());
         }
