@@ -53,6 +53,10 @@ Route::get('privacyPolicy', [\App\Http\Controllers\PrivacyPolicyContorller::clas
 //GET TERMS CONDITIONS
 Route::get("termsCondition", [\App\Http\Controllers\TermsConditionController::class, "index"]);
 
+//GET SPECFIC TERMS
+Route::post("/terms-condition", [\App\Http\Controllers\TermsConditionController::class, "getSpecificTerm"]);
+
+
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::resource('system-settings', \App\Http\Controllers\SystemSettingController::class);

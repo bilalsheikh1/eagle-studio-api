@@ -36,9 +36,22 @@ class TermsConditionController extends Controller
             $termsCondition = TermsCondition::query()->where("type", $request->type)->first();
             $termsCondition->terms_condition = $request->terms_condition;
             $termsCondition->save();
-            return $this->apiSuccess("Terms Condition {$termsCondition->type} has been updated");
+            return $this->apiSuccess("Terms condition {$termsCondition->type} has been updated");
         } catch (Exception $exception){
             return $this->apiFailed("", [], $exception->getMessage());
+        }
+    }
+
+    public function getSpecificTerm(Request $request)
+    {
+        $request->validate([
+            "type" => ["required", "string", "exists:terms_conditions,type"]
+        ]);
+        try {
+            $terms = TermsCondition::query()->where("type", $request->type)->first();
+            return $this->apiSuccess("",$terms);
+        } catch (Exception $exception){
+            return $this->apiFailed("", $exception->getMessage());
         }
     }
 
