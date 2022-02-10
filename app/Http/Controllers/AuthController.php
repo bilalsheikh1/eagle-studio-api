@@ -21,7 +21,7 @@ class AuthController extends Controller
             'password' => ['string', 'min:3']
         ]);
         try {
-            if (!Auth::attempt(['username' => $request->username, 'password' => $request->password, 'is_admin' => 0]))
+            if (!Auth::attempt(['username' => $request->username, 'password' => $request->password, 'is_admin' => 0, "active" => 1]))
                 return response()->json('Invalid login details', 500);
             $token = $request->user()->createToken('auth_token')->plainTextToken;
             return response()->json([
