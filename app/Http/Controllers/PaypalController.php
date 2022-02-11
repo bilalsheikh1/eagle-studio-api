@@ -24,15 +24,6 @@ class PaypalController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -58,14 +49,22 @@ class PaypalController extends Controller
             $order->user()->associate($request->user()->id);
             $order->save();
 
-            $order->products()->attach($request->product_ids);
+            $product_IDS_data = [];
+            foreach ($request->product_ids as $value)
+            {
+                $product_IDS_data = [$value["id"] => ["type"=> $value["type"]]];
+            }
+
+//            $order->products()->attach($request->product_ids);
+            $order->products()->attach($product_IDS_data);
 
             $purchase->type = "paypal";
             $purchase->total = $request->cart["price"];
             $purchase->user()->associate($request->user()->id);
             $purchase->save();
 
-            $purchase->products()->attach($request->product_ids);
+//            $purchase->products()->attach($request->product_ids);
+            $purchase->products()->attach($product_IDS_data);
 
             $paypal->paypal_id = $request->paypalData["paypal_id"];
             $paypal->intent = $request->paypalData["intent"];
@@ -93,28 +92,6 @@ class PaypalController extends Controller
         } catch (\Exception $exception) {
             return $this->apiFailed($exception->getMessage(), []);
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Paypal  $paypal
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Paypal $paypal)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Paypal  $paypal
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Paypal $paypal)
-    {
-        //
     }
 
     /**

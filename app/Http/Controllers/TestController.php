@@ -16,12 +16,11 @@ class TestController extends Controller
 {
     public function test(Request $request)
     {
-        $orders =Order::query()->join('order_product as op', 'orders.id', '=', 'op.id')
-            ->join('products as p', 'p.id', '=', 'op.product_id')
-            ->join('users as u', "u.id", '=', "orders.user_id")
-            ->where('p.user_id', 3)
-            ->select(['p.title','p.id as product_id', 'orders.*', 'u.name'])
-            ->get();
-        dd($orders->toArray());
+       $data= [["id" => "1", "type" => "single_app"], ["id" => "12", "type" => "multi_app"]];
+       foreach ($data as $value)
+       {
+           $temp[] = [$value["id"] => ["type"=> $value["type"]]];
+       }
+        dd($temp);
     }
 }
