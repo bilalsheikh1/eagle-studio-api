@@ -48,7 +48,7 @@ class CommentController extends Controller
             $comment= new Comment();
             $comment->comment = $request->comment;
             $comment->product()->associate($product->id);
-            $comment->user()->associate(1);
+            $comment->user()->associate($request->user()->id);
             $comment->save();
             $data=$product->with(['comments' => function($q){
                 $q->where('parent_id', 0);
