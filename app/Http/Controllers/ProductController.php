@@ -152,7 +152,6 @@ class ProductController extends Controller
                         $product->where('title', 'LIKE', '%'. $value['name'] .'%');
                 }
             }
-            return response()->json($checkType);
             if($checkType == "category" || $checkType == "subCategory" || $checkType == "price" || $checkType == "name") {
                 return response()->json($product->with(['productCategory', 'thumbnailImage'])->get());
             }
