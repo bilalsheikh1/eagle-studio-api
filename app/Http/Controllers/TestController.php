@@ -16,11 +16,8 @@ class TestController extends Controller
 {
     public function test(Request $request)
     {
-       $purchase = new Purchase();
-       $purchase->id = 11;
-       $purchase->type = "ok";
-        $purchase->total = "ok";
-       $purchase->user()->associate(1);
-       $purchase->save();
+        $purchase = Purchase::query()->where("id", 1)->first();
+//        $purchase = $purchase->load("products");
+        dd($purchase);
     }
 }
