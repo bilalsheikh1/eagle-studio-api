@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -84,6 +85,11 @@ class CommentController extends Controller
         }
     }
 
+    public function fetchCommandsByUser(Product $product)
+    {
+
+    }
+
     /**
      * Display the specified resource.
      *
@@ -91,17 +97,6 @@ class CommentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Comment $comment)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Comment  $comment
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Comment $comment)
     {
         //
     }
