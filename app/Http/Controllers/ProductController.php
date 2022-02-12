@@ -151,6 +151,15 @@ class ProductController extends Controller
                     if($value['name']!= "")
                         $product->where('title', 'LIKE', '%'. $value['name'] .'%');
                 }
+
+                if($value["urn"] == "app-template")
+                    $product->whereHas("productTemplate",function ($q){
+                        $q->where('urn', 'like', '%app-template%');
+                    });
+                if($value["urn"] == "game-template")
+                    $product->whereHas("productTemplate",function ($q){
+                        $q->where('urn', 'like', '%game-template%');
+                    });
             }
             if($checkType == "category" || $checkType == "subCategory" || $checkType == "price" || $checkType == "name") {
                 return response()->json($product->with(['productCategory', 'thumbnailImage'])->get());
