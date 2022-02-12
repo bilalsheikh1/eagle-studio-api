@@ -91,8 +91,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/sub-category-product', [ProductController::class, 'getProductBySubCategory']);
     Route::post('/getFilteredData', [ProductController::class,'getFilteredData']);
 
-    //Route::post('/getFilterProduct',[ProductController::class,'getFilterProduct']);
-
     // GET PRODUCT REQUEST
     Route::get('/product-request/{status}',[ProductController::class, 'getRequests']);
 
