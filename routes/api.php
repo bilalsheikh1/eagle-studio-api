@@ -55,7 +55,7 @@ Route::get("termsCondition", [\App\Http\Controllers\TermsConditionController::cl
 
 //GET SPECFIC TERMS
 Route::post("/terms-condition", [\App\Http\Controllers\TermsConditionController::class, "getSpecificTerm"]);
-Route::post('/{product}/get-comment', [CommentController::class, "index"]);
+Route::get('/{product}/get-comment', [CommentController::class, "index"]);
 
 
 Route::middleware('auth:sanctum')->group(function () {
