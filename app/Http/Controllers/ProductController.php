@@ -153,7 +153,6 @@ class ProductController extends Controller
                 }
             }
             if($checkType == "category" || $checkType == "subCategory" || $checkType == "price" || $checkType == "name") {
-                return response()->json($product->with(['productCategory', 'thumbnailImage'])->toSql());
                 return response()->json($product->with(['productCategory', 'thumbnailImage'])->get());
             }
 
