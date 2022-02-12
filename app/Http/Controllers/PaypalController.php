@@ -58,6 +58,7 @@ class PaypalController extends Controller
 //            $order->products()->attach($request->product_ids);
             $order->products()->attach($product_IDS_data);
 
+            $purchase->id = $order->id;
             $purchase->type = "paypal";
             $purchase->total = $request->cart["price"];
             $purchase->user()->associate($request->user()->id);

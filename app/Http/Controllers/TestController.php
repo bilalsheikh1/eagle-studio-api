@@ -16,11 +16,11 @@ class TestController extends Controller
 {
     public function test(Request $request)
     {
-       $data= [["id" => "1", "type" => "single_app"], ["id" => "12", "type" => "multi_app"]];
-       foreach ($data as $value)
-       {
-           $temp[] = [$value["id"] => ["type"=> $value["type"]]];
-       }
-        dd($temp);
+       $purchase = new Purchase();
+       $purchase->id = 11;
+       $purchase->type = "ok";
+        $purchase->total = "ok";
+       $purchase->user()->associate(1);
+       $purchase->save();
     }
 }
