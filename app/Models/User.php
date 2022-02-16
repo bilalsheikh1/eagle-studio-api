@@ -79,6 +79,16 @@ class User extends Authenticatable
         return Carbon::parse($value)->toDayDateTimeString();
     }
 
+    public function getUserComment()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function productRating()
+    {
+        return $this->hasMany(ProductRating::class);
+    }
+
 //    public function getIdAttribute($value)
 //    {
 //        return Crypt::encrypt($value);

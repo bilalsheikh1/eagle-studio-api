@@ -206,10 +206,10 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
         $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:200'],
@@ -218,7 +218,7 @@ class UserController extends Controller
             'password' => ['required', 'min:3', 'confirmed']
         ]);
         try{
-            $user = new User();
+//            $user = new User();
             $user->name = $request->name;
             $user->email = $request->email;
             $user->username = $request->username;

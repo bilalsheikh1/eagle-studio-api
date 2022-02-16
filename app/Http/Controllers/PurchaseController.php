@@ -22,6 +22,7 @@ class PurchaseController extends Controller
             foreach ($data as $index => $v)
             {
                 $data[$index]->products = $v->products;
+                $data[$index]->prdouct_rating = $v->prdouctRating ;
             }
             return $this->apiSuccess("", $data);
         } catch (Exception $exception) {

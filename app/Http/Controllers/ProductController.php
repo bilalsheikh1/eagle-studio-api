@@ -25,7 +25,7 @@ class ProductController extends Controller
             if( isset($request->urn)) {
                 $product = ProductTemplate::query()->where('urn','like','%'. $request->urn .'%')->with(['products' => function($q) {
                     $q->where('status','1');
-                }, 'products.productTemplate', 'products.thumbnailImage'])->get()->pluck('products');
+                }, 'products.productTemplate', 'products.thumbnailImage', "products.productCategory"])->get()->pluck('products');
                 if(count($product) > 0)
                     return response()->json($product[0]);
                 return response()->json([]);

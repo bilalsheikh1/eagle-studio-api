@@ -69,7 +69,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('become-seller', \App\Http\Controllers\BecomeSellerController::class);
     Route::resource("wishlist", \App\Http\Controllers\WishlistController::class);
 
+    //RATING ROUTE
+    Route::resource("{product}/productRating",\App\Http\Controllers\ProductRatingController::class);
+
+    //EARNING ROUTE
     Route::get("/get-earnings",[ProductController::class, "getProductsViews"]);
+
+    //GET COMMENT
+    Route::get("/fetch-messages", [CommentController::class, "fetchCommandsByUser"]);
 
     //GET PRODUCTS BY STATUS
     Route::post("get-products-status", [ProductController::class, "getProductsByStatus"]);
@@ -106,6 +113,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Comments Session
     Route::resource('/{product}/comment', CommentController::class);
+    Route::get('/{product}/get-comment-product', [CommentController::class,"getCommentByProductID"]);
     Route::post('/{product}/reply-comment',[CommentController::class, 'commentReply']);
 
     //GET USER PROFILE

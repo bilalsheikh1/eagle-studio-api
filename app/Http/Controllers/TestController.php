@@ -2,22 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
-use App\Models\Paypal;
+use App\Mail\ConformationMail;
+use App\Models\Comment;
 use App\Models\Product;
 use App\Models\Purchase;
-use Carbon\Carbon;
-use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Builder;
+use Illuminate\Support\Facades\Mail;
 
 class TestController extends Controller
 {
-    public function test(Request $request)
+    public function test(Product $product)
     {
-        $purchase = Purchase::query()->where("id", 1)->first();
-//        $purchase = $purchase->load("products");
-        dd($purchase);
+        $data = Purchase::query()->has("products")->with("products.productRating")->where("user_id", 4)->orderByDesc("id")->get();
+        foreach ($data as $index => $v)
+        {
+            $data[$index]->products = $v->products;
+            $data[$index]->prdouct_ratings = $v->productRating;
+        }
+        dd($data);
     }
 }

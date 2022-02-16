@@ -35,4 +35,9 @@ class Comment extends Model
         return $this->belongsTo(Comment::class, 'parent_id');
     }
 
+    public function productOwnerUserIDInComment()
+    {
+        return $this->belongsTo(User::class, "product_owner_id");
+    }
+
 }

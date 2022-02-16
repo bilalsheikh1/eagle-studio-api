@@ -14,8 +14,8 @@ class ProductCategorySeeder extends Seeder
      */
     public function run()
     {
-        ProductCategory::query()->updateOrInsert(['name' => 'Android'], ['name' => 'Android']);
-        ProductCategory::query()->updateOrInsert(['name' => 'iOS'], ['name' => 'iOS']);
-        ProductCategory::query()->updateOrInsert(['name' => 'Unity'], ['name' => 'Unity']);
+        ProductCategory::query()->updateOrInsert(['name' => 'Android', "icon" => "<SiAndroid />"], ['name' => 'Android', "icon" => "<SiAndroid />"]);
+        ProductCategory::query()->updateOrInsert(['name' => 'iOS', "icon" => "<SiIos />"], ['name' => 'iOS', "icon" => "<SiIos />"]);
+        ProductCategory::query()->updateOrInsert(['name' => 'Unity', "icon" => "<SiUnity />"], ['name' => 'Unity', "icon" => "<SiUnity />"]);
     }
 }

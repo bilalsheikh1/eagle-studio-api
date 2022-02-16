@@ -102,4 +102,9 @@ class Product extends Model
     {
         return Carbon::parse($value)->toDayDateTimeString();
     }
+
+    public function productRating()
+    {
+        return $this->hasMany(ProductRating::class);
+    }
 }
