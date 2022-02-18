@@ -111,7 +111,7 @@ class CommentController extends Controller
                 $q->select(["id", "username"]);
             }, "product" => function($q){
                 $q->select(["id","title"]);
-            }])->where("product_owner_id", 1)->latest()
+            }])->where("product_owner_id", $request->user()->id)->latest()
                 ->orderByDesc("created_at")->get()->unique('user_id');
             return $this->apiSuccess("", $comments);
         } catch (Exception $exception){
