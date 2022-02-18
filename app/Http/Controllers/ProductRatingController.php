@@ -27,16 +27,6 @@ class ProductRatingController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -48,6 +38,9 @@ class ProductRatingController extends Controller
            "rating" => ["required"]
         ]);
         try {
+            $productRating = ProductRating::query()->where("product_id", $request->id)->where("user_id", $request->user()->id)->first();
+            if(!empty($productRating))
+                return $this->apiSuccess("Already rating gived");
             $productRating = new ProductRating();
             $productRating->rating = $request->rating;
             $productRating->product()->associate($product);
@@ -59,38 +52,9 @@ class ProductRatingController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\ProductRating  $productRating
-     * @return \Illuminate\Http\Response
-     */
-    public function show(ProductRating $productRating)
+    public function getProductRating()
     {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\ProductRating  $productRating
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(ProductRating $productRating)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\ProductRating  $productRating
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, ProductRating $productRating)
-    {
-        //
     }
 
     /**
