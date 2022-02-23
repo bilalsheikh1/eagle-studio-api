@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Traits\ApiResponse;
 use App\Models\Product;
 use App\Models\ProductRating;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 class ProductRatingController extends Controller
@@ -40,8 +41,9 @@ class ProductRatingController extends Controller
         try {
             $productRating = ProductRating::query()->where("product_id", $request->id)->where("user_id", $request->user()->id)->first();
             if(!empty($productRating))
-                return $this->apiSuccess("Already rating gived");
+                return $this->apiSuccess("Already rating given");
             $productRating = new ProductRating();
+            $productRating->message = $request->message;
             $productRating->rating = $request->rating;
             $productRating->product()->associate($product);
             $productRating->user()->associate($request->user()->id);
@@ -52,9 +54,25 @@ class ProductRatingController extends Controller
         }
     }
 
-    public function getProductRating()
-    {
 
+    public function addRatedComment(Product $product, Request $request)
+    {
+        $request->validate([
+            "message" => ["required"]
+        ]);
+        try {
+            $productRating = ProductRating::query()->where("product_id", $request->id)->where("user_id", $request->user()->id)->first();
+            if(!empty($productRating))
+                return $this->apiSuccess("Already rating given");
+            $productRating = new ProductRating();
+            $productRating->message = $request->message;
+            $productRating->rating = $request->rating;
+            $productRating->product()->associate($product);
+            $productRating->user()->associate($request->user()->id);
+            $productRating->save();
+        } catch (Exception $exception){
+            return $this->apiFailed("", [], $exception->getMessage());
+        }
     }
 
     /**

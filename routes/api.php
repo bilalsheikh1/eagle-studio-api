@@ -72,6 +72,9 @@ Route::middleware('auth:sanctum')->group(function () {
     //RATING ROUTE
     Route::resource("{product}/productRating",\App\Http\Controllers\ProductRatingController::class);
 
+    //RATING MESSGAE
+    Route::post("{product}/product-rating-message",[\App\Http\Controllers\ProductRatingController::class, "addRatedComment"]);
+
     //EARNING ROUTE
     Route::get("/get-earnings",[ProductController::class, "getProductsViews"]);
 

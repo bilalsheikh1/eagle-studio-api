@@ -15,6 +15,7 @@ class CreateProductRatingsTable extends Migration
     {
         Schema::create('product_ratings', function (Blueprint $table) {
             $table->id();
+            $table->text("message")->nullable();
             $table->float('rating');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('product_id');
