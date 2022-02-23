@@ -169,7 +169,13 @@ Route::middleware('auth:sanctum')->prefix('admin')->name('admin.')->group(functi
     Route::resource("privacyPolicy", \App\Http\Controllers\PrivacyPolicyContorller::class);
     Route::resource("termsCondition", \App\Http\Controllers\TermsConditionController::class);
 
-    Route::put("terms-update", [\App\Http\Controllers\TermsConditionController::class, "update"]);
+    //EAMIL DESIGN
+    Route::resource("/email-design", \App\Http\Controllers\EmailDesignController::class);
+
+    //GET EMAIL DESIGN BY KEY
+    Route::post("/get-email-by-key/{key}", [\App\Http\Controllers\EmailDesignController::class, "getEmailFiledByKey"]);
+
+    Route::put("/terms-update", [\App\Http\Controllers\TermsConditionController::class, "update"]);
 
     //FILTERED ORDERS
     Route::post("/filter-order", [\App\Http\Controllers\OrderController::class, "getFilteredOrders"]);

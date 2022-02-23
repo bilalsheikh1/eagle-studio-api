@@ -3,32 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ConformationMail;
-use App\Models\Comment;
+use App\Mail\SendPasswordMail;
 use App\Models\Product;
-use App\Models\ProductRating;
-use App\Models\ProductTemplate;
-use App\Models\Purchase;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class TestController extends Controller
 {
+    public function OTPGenerator($length_of_string)
+    {
+        return substr(bin2hex(random_bytes($length_of_string)), 0, $length_of_string);
+    }
+
     public function test(Product $product)
     {
-//        $product = Product::query()->with(['productTemplate', 'thumbnailImage', "productCategory",
-//            "productRating" => function($q){
-////                $q->select("rating", DB::raw("count(rating) as count"))->groupBy("rating")->get();
-//
-//            }])->where("status", "1")->get();
+        $data = array('name'=>"Muhammad Bilal");
 
-        $product = Product::query()->with(['productTemplate', 'thumbnailImage', "productCategory"])->withAvg("productRating","rating")->
-        where("status", "1")->paginate(10);
+        $password = $this->OTPGenerator(6);
+//        Mail::send(['text'=> "Password is {$password}"], $data, function($message) {
+//            $message->to('bilalsheikh923@gmail.com', 'Tutorials Point')->subject("Email Verification");
+//        });
+        Mail::to('bilalsheikh923@gmail.com')->send(new SendPasswordMail());
 
-//        foreach ($product as $index => $value)
-//        {
-//            $product[$index]->productRating = $value->productRating;
-//        }
-        dd($product->toArray());
+        echo "Basic Email Sent. Check your inbox.";
     }
 }
