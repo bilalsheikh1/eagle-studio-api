@@ -23,12 +23,13 @@ class ProductController extends Controller
     {
         try {
             if( isset($request->urn)) {
+                $productTemplate = ProductTemplate::query()->where("urn",'like','%'. $request->urn .'%')->first();
                 $product = Product::query()->with(['productTemplate', 'thumbnailImage', "productCategory"])->withAvg("productRating","rating")->
-                where("status", "1")->paginate(48);
+                where("status", "1")->where("product_template_id",$productTemplate->id)->paginate(48);
                 return $this->apiSuccess("",$product);
             }
             else
-                return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->paginate($request->pageSize));
+                return response()->json([]);
         } catch (Exception $exception) {
             return response()->json($exception->getMessage(), 500);
         }
