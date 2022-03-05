@@ -130,7 +130,7 @@ class ProductController extends Controller
         try {
             $product = Product::query();
             $checkType = "";
-            foreach ($request->all() as $key => $value){
+            foreach ($request->template as $key => $value){
                 $checkType = $value['type'];
                 if($value['type'] == "category"){
                     $product->whereHas('productCategory', function ($q) use ($value){
@@ -145,29 +145,25 @@ class ProductController extends Controller
                 if($value['type'] == "price"){
                     $product->whereBetween('single_app_license', $value['price']);
                 }
-                if(isset($value['name'])){
-                    if($value['name']!= "")
-                        $product->where('title', 'LIKE', '%'. $value['name'] .'%');
-                }
+//                if(isset($value['name'])){
+//                    if($value['name']!= "")
+//                        $product->where('title', 'LIKE', '%'. $value['name'] .'%');
+//                }
 
-                if($value["urn"] == "app-template")
-                    $product->whereHas("productTemplate",function ($q){
-                        $q->where('urn', 'like', '%app-template%');
-                    });
-                if($value["urn"] == "game-template")
-                    $product->whereHas("productTemplate",function ($q){
-                        $q->where('urn', 'like', '%game-template%');
+                if(isset($request->urn))
+                    $product->whereHas("productTemplate",function ($q) use ($request){
+                        $q->where('urn', 'like', "%{$request->urn}%");
                     });
             }
-            if($checkType == "category" || $checkType == "subCategory" || $checkType == "price" || $checkType == "name") {
-                return response()->json($product->with(['productCategory', 'thumbnailImage'])->get());
-            }
+//            if($checkType == "category" || $checkType == "subCategory" || $checkType == "price" || $checkType == "name") {
+                return response()->json($product->with(['productCategory', 'thumbnailImage'])->where("status", 1)->paginate(48));
+//            }
 
-            if(isset($request->urn)) {
-                $product = ProductTemplate::query()->where('urn', 'like', '%' . $request->urn . '%')->with(['products', 'products.productTemplate', 'products.thumbnailImage'])->get()->pluck('products');
-                if (count($product) > 0)
-                    return response()->json($product[0]);
-            }
+//            if(isset($request->urn)) {
+//                $product = ProductTemplate::query()->where('urn', 'like', '%' . $request->urn . '%')->with(['products', 'products.productTemplate', 'products.thumbnailImage'])->get()->pluck('products');
+//                if (count($product) > 0)
+//                    return response()->json($product[0]);
+//            }
             return response()->json([]);
         } catch (Exception $exception) {
             return response()->json($exception->getMessage(), 500);
