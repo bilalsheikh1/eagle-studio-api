@@ -113,12 +113,10 @@ class ProductController extends Controller
             'urn' => ['required','string']
         ]);
         try {
-            $productTemplate = ProductTemplate::query()->where("urn",'like','%'. $request->urn .'%')->first();
-            $product = Product::query()->with(['productTemplate', 'thumbnailImage', "productCategory"])->withAvg("productRating","rating")->
-            where("status", "1")->where("product_template_id",$productTemplate->id)->paginate(48);
+            $product = ProductTemplate::query()->where('urn','like','%'. $request->urn .'%')->with('productSubcategories')->get()->pluck('productSubcategories');
             if(count($product) > 0)
-                return $this->apiSuccess("",$product);
-            return $this->apiSuccess("No Data");
+                return response()->json($product[0]);
+            return response()->json("data not found");
         } catch (Exception $exception){
             return response()->json($exception->getMessage(), 500);
         }
@@ -158,7 +156,7 @@ class ProductController extends Controller
                     });
             }
 //            if($checkType == "category" || $checkType == "subCategory" || $checkType == "price" || $checkType == "name") {
-                return response()->json($product->with(['productCategory', 'thumbnailImage'])->where("status", 1)->paginate(48));
+                return response()->json($product->with(['productCategory', 'thumbnailImage'])->where("status", 1)->pagin());
 //            }
 
 //            if(isset($request->urn)) {
