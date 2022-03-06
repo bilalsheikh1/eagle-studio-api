@@ -113,7 +113,11 @@ class ProductController extends Controller
             'urn' => ['required','string']
         ]);
         try {
-            $product = ProductTemplate::query()->where('urn','like','%'. $request->urn .'%')->with('productSubcategories')->get()->pluck('productSubcategories');
+//            $product = ProductTemplate::query()->where('urn','like','%'. $request->urn .'%')->with('productSubcategories')->get()->pluck('productSubcategories');
+            $productTemplate = ProductTemplate::query()->where("urn",'like','%'. $request->urn .'%')->first();
+            $product = Product::query()->with(['productTemplate', 'thumbnailImage', "productCategory"])->withAvg("productRating","rating")->
+            where("status", "1")->where("product_template_id",$productTemplate->id)->get();
+//                ->paginate(48);
             if(count($product) > 0)
                 return response()->json($product[0]);
             return response()->json("data not found");
