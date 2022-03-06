@@ -97,7 +97,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('sub-category', [ProductSubcategoryController::class, 'getSubcategories']);
 
-    //Route::post('/template-product', [ProductController::class, 'getProductByTemplate']);
+    Route::post('/template-product', [ProductController::class, 'getProductByTemplate']);
     Route::post('/sub-category-product', [ProductController::class, 'getProductBySubCategory']);
     Route::post('/getFilteredData', [ProductController::class,'getFilteredData']);
 
