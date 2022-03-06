@@ -120,7 +120,7 @@ class ProductController extends Controller
 //                ->paginate(48);
             if(count($product) > 0)
                 return $this->apiSuccess("",$product);
-            return response()->json("data not found");
+            return $this->apiSuccess("",[]);
         } catch (Exception $exception){
             return response()->json($exception->getMessage(), 500);
         }
