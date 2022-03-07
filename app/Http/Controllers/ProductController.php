@@ -113,14 +113,18 @@ class ProductController extends Controller
             'urn' => ['required','string']
         ]);
         try {
-//            $product = ProductTemplate::query()->where('urn','like','%'. $request->urn .'%')->with('productSubcategories')->get()->pluck('productSubcategories');
-            $productTemplate = ProductTemplate::query()->where("urn",'like','%'. $request->urn .'%')->first();
-            $product = Product::query()->with(['productTemplate','productTemplate.productSubcategories', 'thumbnailImage', "productCategory"])->withAvg("productRating","rating")->
-            where("status", "1")->where("product_template_id",$productTemplate->id)->get();
-//                ->paginate(48);
-            if(count($product) > 0)
-                return $this->apiSuccess("",$product);
-            return $this->apiSuccess("",[]);
+            $productTemplate = ProductTemplate::query()->
+            where('urn','like','%'. $request->urn .'%')->
+            with('productSubcategories')->first();
+
+            $product = Product::query()->
+            with(['productTemplate', 'thumbnailImage', "productCategory"])->
+            withAvg("productRating","rating")->
+            where("status", "1")->where("product_template_id",$productTemplate->id)->paginate(48);
+
+//            if(empty($productTemplate) > 0)
+                return $this->apiSuccess("",["productTemplate" => $productTemplate, "product" => $product]);
+//            return $this->apiSuccess("",["productTemplate" => [], "product" => $product]);
         } catch (Exception $exception){
             return response()->json($exception->getMessage(), 500);
         }
@@ -149,10 +153,10 @@ class ProductController extends Controller
                 if($value['type'] == "price"){
                     $product->whereBetween('single_app_license', $value['price']);
                 }
-//                if(isset($value['name'])){
-//                    if($value['name']!= "")
-//                        $product->where('title', 'LIKE', '%'. $value['name'] .'%');
-//                }
+                if(isset($value['title'])){
+                    if($value['title']!= "")
+                        $product->where('title', 'LIKE', '%'. $value['title'] .'%');
+                }
 
                 if(isset($request->urn))
                     $product->whereHas("productTemplate",function ($q) use ($request){
@@ -160,7 +164,7 @@ class ProductController extends Controller
                     });
             }
 //            if($checkType == "category" || $checkType == "subCategory" || $checkType == "price" || $checkType == "name") {
-                return response()->json($product->with(['productCategory', 'thumbnailImage'])->where("status", 1)->pagin());
+                return response()->json($product->with(['productCategory', 'thumbnailImage'])->where("status", 1)->paginate(48));
 //            }
 
 //            if(isset($request->urn)) {
