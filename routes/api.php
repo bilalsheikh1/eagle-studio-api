@@ -62,6 +62,10 @@ Route::get('/{product}/get-comment', [CommentController::class, "index"]);
 //SELL YOUR APP
 Route::get("sellYourApp", [\App\Http\Controllers\SellYourAppController::class,"index"]);
 
+//Get Product By Title
+Route::post('/getProductByTitle', [ProductController::class, 'getProductByTitle']);
+Route::get('sub-category', [ProductSubcategoryController::class, 'getSubcategories']);
+
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::resource('system-settings', \App\Http\Controllers\SystemSettingController::class);
@@ -99,8 +103,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('getUser/{id}', [UserController::class, 'getUser']);
     Route::post('change-password/{user}', [UserController::class, 'changePassword']);
 
-    Route::get('sub-category', [ProductSubcategoryController::class, 'getSubcategories']);
-
     Route::post('/sub-category-product', [ProductController::class, 'getProductBySubCategory']);
     Route::post('/getFilteredData', [ProductController::class,'getFilteredData']);
 
@@ -109,9 +111,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //FILTERED PRODUCT REQUEST
     Route::post('product-fitlered/{status}', [ProductController::class, 'filteredProductRequest']);
-
-    //Get Product By Title
-    Route::post('/getProductByTitle', [ProductController::class, 'getProductByTitle']);
 
     // CART
     Route::resource('cart',CartController::class);
