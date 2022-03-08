@@ -142,7 +142,7 @@ class UserController extends Controller
         try {
             return response()->json($user->load(['products' => function($q){
                 $q->where('status', 1);
-            }, "products.thumbnailImage"]));
+            }, "products.thumbnailImage", "becomeSeller"]));
         } catch (\Exception $exception){
             return response()->json($exception->getMessage(), 500);
         }
