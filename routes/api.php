@@ -151,7 +151,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource("order", \App\Http\Controllers\OrderController::class);
     Route::resource("purchase", \App\Http\Controllers\PurchaseController::class);
 
-
+    //UPDATE PROFILE IMAGE
+    Route::post("{id}/upload-profile-image", [UserController::class,'uploadProfileImage']);
 
 });
 

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -174,6 +175,24 @@ class UserController extends Controller
         }
     }
 
+    public function uploadProfileImage($id, Request $request)
+    {
+        $request->validate([
+            'file' => ['required', 'mimes:jpg,png']
+        ]);
+        try {
+            $id = decrypt($id);
+            $user = User::query()->where("id", $id)->first();
+            $name = $request->file('file')->getClientOriginalName();
+            $path = $request->file('file')->storeAs('User-Profile', $name, 'public');
+            $user->profile_img = Storage::disk('public')->url($path);
+            $user->save();
+            return $this->apiSuccess("Image has been uploaded", $user->profile_img);
+        } catch (Exception $exception){
+            return $this->apiFailed("", [], $exception->getMessage());
+        }
+    }
+
     public function changePassword(User $user, Request $request)
     {
         $request->validate([
@@ -183,23 +202,13 @@ class UserController extends Controller
         try {
             if (!Hash::check($request->current_password, $user->password))
                 return response()->json('Current password does`nt match');
+
             $user->password = bcrypt($request->password);
             $user->save();
             return response()->json("Password changed");
         } catch (\Exception $exception){
             return response()->json($exception->getMessage(), 500);
         }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
