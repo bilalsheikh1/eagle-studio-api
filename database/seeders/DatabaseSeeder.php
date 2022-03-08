@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PrivacyPolicySeeder::class);
         $this->call(TermsConditionSeeder::class);
         $this->call(EmailDesignSeeder::class);
+        $this->call(SellYourAppSeeder::class);
     }
 }
