@@ -247,7 +247,9 @@ class ProductController extends Controller
             if($product->status == 1) {
                 $product->productViews()->create(["views" => 1, "product_id" => $product->id]);
                 $product->update();
-                return response()->json($product->load(['productTemplate', 'productCategory', 'productSubcategory', 'operatingSystems', 'framework', 'featuredImage', 'screenshots', 'thumbnailImage', 'file', 'user']));
+                return response()->json($product->load(['productTemplate', 'productRating' => function ($q){
+                    $q->with("user");
+                }, 'productCategory', 'productSubcategory', 'operatingSystems', 'framework', 'featuredImage', 'screenshots', 'thumbnailImage', 'file', 'user']));
             }
             return response()->json([]);
         } catch (Exception $exception) {

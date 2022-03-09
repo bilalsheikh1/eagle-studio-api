@@ -39,9 +39,9 @@ class ProductRatingController extends Controller
            "rating" => ["required"]
         ]);
         try {
-            $productRating = ProductRating::query()->where("product_id", $request->id)->where("user_id", $request->user()->id)->first();
+            $productRating = ProductRating::query()->where("product_id", $product->id)->where("user_id", $request->user()->id)->first();
             if(!empty($productRating))
-                return $this->apiSuccess("Already rating given");
+                return $this->apiSuccess("Already rated");
             $productRating = new ProductRating();
             $productRating->message = $request->message;
             $productRating->rating = $request->rating;
@@ -54,6 +54,20 @@ class ProductRatingController extends Controller
         }
     }
 
+    public function update(Product $product, Request $request)
+    {
+        $request->validate([
+            "message" => ["string", "required"]
+        ]);
+        try {
+            $product->message = $request->message;
+            $product->update();
+            return $this->apiSuccess("Product {$product->title} rating has been added");
+        } catch (Exception $exception){
+            return $this->apiFailed("", [], $exception->getMessage());
+        }
+    }
+
 
     public function addRatedComment(Product $product, Request $request)
     {
@@ -61,15 +75,24 @@ class ProductRatingController extends Controller
             "message" => ["required"]
         ]);
         try {
-            $productRating = ProductRating::query()->where("product_id", $request->id)->where("user_id", $request->user()->id)->first();
-            if(!empty($productRating))
-                return $this->apiSuccess("Already rating given");
-            $productRating = new ProductRating();
-            $productRating->message = $request->message;
-            $productRating->rating = $request->rating;
-            $productRating->product()->associate($product);
-            $productRating->user()->associate($request->user()->id);
-            $productRating->save();
+            $productRating = ProductRating::query()->where("product_id", $product->id)->where("user_id", $request->user()->id)->first();
+            if(!empty($productRating)) {
+                if ($productRating->message != "" && $productRating->message)
+                    return $this->apiSuccess("Already rating given");
+                else {
+                    $productRating->message = $request->message;
+                    $productRating->update();
+                    return $this->apiSuccess("Product Rating Comment has been added");
+                }
+            }
+            return $this->apiSuccess("please first rate to star then comments");
+
+//            $productRating = new ProductRating();
+//            $productRating->message = $request->message;
+//            $productRating->rating = $request->rating;
+//            $productRating->product()->associate($product);
+//            $productRating->user()->associate($request->user()->id);
+//            $productRating->save();
         } catch (Exception $exception){
             return $this->apiFailed("", [], $exception->getMessage());
         }
