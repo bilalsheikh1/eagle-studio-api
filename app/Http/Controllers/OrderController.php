@@ -127,7 +127,16 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
-        //
+        $request->validate([
+            "status" => ["required", "numeric"]
+        ]);
+        try {
+            $order->status = $request->status;
+            $order->update();
+            return $this->apiSuccess("Order Status has been updated");
+        } catch (Exception $exception){
+            return $this->apiFailed("", [], $exception->getMessage());
+        }
     }
 
     /**

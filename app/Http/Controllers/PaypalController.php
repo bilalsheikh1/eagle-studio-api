@@ -44,18 +44,18 @@ class PaypalController extends Controller
             $order = new Order();
             $purchase = new Purchase();
 
-            $order->status = true;
-            $order->total = $request->cart["price"];
-            $order->user()->associate($request->user()->id);
-            $order->save();
-
             $product_IDS_data = [];
+            $totalPrice = 0;
             foreach ($request->product_ids as $value)
             {
                 $product_IDS_data = [$value["id"] => ["type"=> $value["type"]]];
             }
 
-//            $order->products()->attach($request->product_ids);
+            $order->status = true;
+            $order->total = $request->cart["price"];
+            $order->user()->associate($request->user()->id);
+            $order->save();
+
             $order->products()->attach($product_IDS_data);
 
             $purchase->id = $order->id;
