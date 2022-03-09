@@ -3,12 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Mail\SendPasswordMail;
-use App\Models\BecomeSeller;
-use App\Models\SystemSetting;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;

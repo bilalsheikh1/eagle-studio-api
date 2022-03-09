@@ -138,7 +138,7 @@ class ProductController extends Controller
             foreach ($request->template as $key => $value){
                 if($value['type'] == "category"){
                     $product->whereHas('productCategory', function ($q) use ($value){
-                        $q->where('product_categories.id', $value['id']);
+                        $q->where('product_categories.name', $value['name']);
                     });
                 }
                 if($value['type'] == "subCategory"){
