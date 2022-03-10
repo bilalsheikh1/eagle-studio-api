@@ -112,7 +112,8 @@ class CommentController extends Controller
                 $q->select(["id", "username"]);
             }, "product" => function($q){
                 $q->select(["id","title"]);
-            }])->whereRaw("id IN (SELECT MAX(id) FROM `comments` WHERE user_id = {$request->user()->id} OR product_owner_id = {$request->user()->id} GROUP BY user_id, product_owner_id)")->get();
+            }])->
+            whereRaw("id IN (SELECT MAX(id) FROM `comments` WHERE user_id = {$request->user()->id} OR product_owner_id = {$request->user()->id} GROUP BY product_id)")->get();
 
             return $this->apiSuccess("", $comments);
         } catch (Exception $exception){
