@@ -7,6 +7,7 @@ use App\Models\Comment;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CommentController extends Controller
 {
@@ -111,8 +112,8 @@ class CommentController extends Controller
                 $q->select(["id", "username"]);
             }, "product" => function($q){
                 $q->select(["id","title"]);
-            }])->where("product_owner_id", $request->user()->id)->latest()
-                ->orderByDesc("created_at")->get()->unique('user_id');
+            }])->whereRaw("id IN (SELECT MAX(id) FROM `comments` WHERE user_id = {$request->user()->id} OR product_owner_id = {$request->user()->id} GROUP BY user_id, product_owner_id)")->get();
+
             return $this->apiSuccess("", $comments);
         } catch (Exception $exception){
             return $this->apiFailed("", [],$exception->getMessage());
