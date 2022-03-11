@@ -47,7 +47,6 @@ class PaypalController extends Controller
 
             $product_IDS_data = [];
             $totalPrice = 0;
-//            $product_ids = [];
             $products= [];
             foreach ($request->product_ids as $value)
             {
@@ -55,8 +54,6 @@ class PaypalController extends Controller
                 $product_ids[] = $value["id"];
                 $products[] = Product::query()->where("id", $value["id"])->select("{$value["type"]}")->first();
             }
-//            $totalPrice
-
             foreach ($products as $v){
                 if(isset($v->single_app_license) && $v->single_app_license != "")
                     $totalPrice += $v->single_app_license;
@@ -64,12 +61,8 @@ class PaypalController extends Controller
                     $totalPrice += $v->multi_app_license;
             }
 
-            return $totalPrice;
-
-//            $product = Product::query()->whereIn("id", $product_ids)->get();
-
             $order->status = true;
-            $order->total = $request->cart["price"];
+            $order->total = $totalPrice;
             $order->user()->associate($request->user()->id);
             $order->save();
 
@@ -77,7 +70,7 @@ class PaypalController extends Controller
 
             $purchase->id = $order->id;
             $purchase->type = "paypal";
-            $purchase->total = $request->cart["price"];
+            $purchase->total = $totalPrice;
             $purchase->user()->associate($request->user()->id);
             $purchase->save();
 
