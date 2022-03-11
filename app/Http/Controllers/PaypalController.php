@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Paypal;
+use App\Models\Product;
 use App\Models\Purchase;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -46,10 +47,26 @@ class PaypalController extends Controller
 
             $product_IDS_data = [];
             $totalPrice = 0;
+//            $product_ids = [];
+            $products= [];
             foreach ($request->product_ids as $value)
             {
                 $product_IDS_data = [$value["id"] => ["type"=> $value["type"]]];
+                $product_ids[] = $value["id"];
+                $products[] = Product::query()->where("id", $value["id"])->select("{$value["type"]}")->first();
             }
+//            $totalPrice
+
+            foreach ($products as $v){
+                if(isset($v->single_app_license) && $v->single_app_license != "")
+                    $totalPrice += $v->single_app_license;
+                else if(isset($v->multi_app_license) && $v->multi_app_license != "")
+                    $totalPrice += $v->multi_app_license;
+            }
+
+            return $totalPrice;
+
+//            $product = Product::query()->whereIn("id", $product_ids)->get();
 
             $order->status = true;
             $order->total = $request->cart["price"];
