@@ -301,7 +301,13 @@ class ProductController extends Controller
             if($request->operating_systems)
                 $product->operatingSystems()->sync($request->operating_systems);
 
+            if($request->step3) {
+                if(!$product->file()->exists())
+                    return response()->json("Product File required",422);
+            }
+
             $product->fill($request->all());
+            $product->status = 1;
             $product->save();
             return response()->json($product);
         } catch (Exception $exception) {

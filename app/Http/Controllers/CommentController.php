@@ -34,7 +34,8 @@ class CommentController extends Controller
         try {
             $data = $product->with(['comments' => function ($q) {
                 $q->where('parent_id', 0);
-            }, 'comments.children', 'comments.children.user', 'comments.user:id,username'])->get();
+            }, 'comments.children', 'comments.children.user', 'comments.user:id,username',"thumbnailImage", "productCategory"])
+                ->withAvg("productRating","rating")->get();
             if (count($data) > 0)
                 return $this->apiSuccess("", $data[0]);
             return response()->json([]);

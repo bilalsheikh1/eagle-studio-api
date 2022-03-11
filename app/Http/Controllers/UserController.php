@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Traits\ApiResponse;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -140,9 +141,15 @@ class UserController extends Controller
     public function show(User $user)
     {
         try {
+//            return response()->json(Product::query()->with(['productTemplate', 'thumbnailImage', "productCategory"])->withAvg("productRating","rating")->
+//            where("status", "1")->where("user_id", $user->id)->get());
+            return Product::query()->with(["user.becomeSeller", "thumbnailImage"])
+                ->withAvg("productRating","rating")
+                ->where("status", 1)->where("user_id", $user->id)->get();
+
             return response()->json($user->load(['products' => function($q){
                 $q->where('status', 1);
-            }, "products.thumbnailImage", "becomeSeller"]));
+            }, "products.thumbnailImage", "becomeSeller"])->get());
         } catch (\Exception $exception){
             return response()->json($exception->getMessage(), 500);
         }
