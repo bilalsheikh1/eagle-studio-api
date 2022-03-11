@@ -74,7 +74,6 @@ class PaypalController extends Controller
             $purchase->user()->associate($request->user()->id);
             $purchase->save();
 
-//            $purchase->products()->attach($request->product_ids);
             $purchase->products()->attach($product_IDS_data);
 
             $paypal->paypal_id = $request->paypalData["paypal_id"];
@@ -88,7 +87,6 @@ class PaypalController extends Controller
             $paypal->amount = $request->paypalData["amount"];
             $paypal->payee_email = $request->paypalData["payee_email"];
             $paypal->payee_merchant_id = $request->paypalData["payee_merchant_id"];
-//            $paypal->paypal_payment_status = $request->paypal_payment_status;
             $paypal->status = $request->paypalData["status"];
 
             $paypal->purchase_id = $purchase->id;
