@@ -64,6 +64,8 @@ Route::get("sellYourApp", [\App\Http\Controllers\SellYourAppController::class,"i
 //Get Product By Title
 Route::post('/getProductByTitle', [ProductController::class, 'getProductByTitle']);
 Route::get('sub-category', [ProductSubcategoryController::class, 'getSubcategories']);
+Route::get('user-detail/{user}', [UserController::class, "show"]);
+
 
 Route::middleware('auth:sanctum')->group(function () {
 

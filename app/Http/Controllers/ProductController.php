@@ -24,8 +24,9 @@ class ProductController extends Controller
         try {
             if( isset($request->urn)) {
                 $productTemplate = ProductTemplate::query()->where("urn",'like','%'. $request->urn .'%')->first();
-                $product = Product::query()->with(['productTemplate', 'thumbnailImage', "productCategory"])->withAvg("productRating","rating")->
-                where("status", "1")->where("product_template_id",$productTemplate->id)->paginate(48);
+                $product = Product::query()->with(['productTemplate', 'thumbnailImage', "productCategory"])
+                ->withAvg("productRating","rating")->where("status", "1")->
+                where("product_template_id",$productTemplate->id)->paginate(48);
                 return $this->apiSuccess("",$product);
             }
             else
