@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\ProductSubcategory;
 use App\Models\ProductTemplate;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class ProductSubcategoryController extends Controller
 {
@@ -18,6 +17,10 @@ class ProductSubcategoryController extends Controller
     public function index(ProductTemplate $productTemplate): \Illuminate\Http\JsonResponse
     {
         try {
+            if($productTemplate->urn == "ready-2-use")
+            {
+                return response()->json(ProductSubcategory::query()->get());
+            }
             return response()->json($productTemplate->productSubcategories()->get());
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 500);

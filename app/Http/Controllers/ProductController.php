@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Traits\ApiResponse;
 use App\Models\Product;
+use App\Models\ProductSubcategory;
 use App\Models\ProductTemplate;
 use App\Models\ProductView;
 use Carbon\Carbon;
@@ -23,10 +24,34 @@ class ProductController extends Controller
     {
         try {
             if( isset($request->urn)) {
-                $productTemplate = ProductTemplate::query()->where("urn",'like','%'. $request->urn .'%')->first();
-                $product = Product::query()->with(['productTemplate', 'thumbnailImage', "productCategory"])
-                ->withAvg("productRating","rating")->where("status", "1")->
-                where("product_template_id",$productTemplate->id)->paginate(48);
+                if($request->urn != "sold-ready-2-use")
+                    $productTemplate = ProductTemplate::query()->where("urn",'like','%'. $request->urn .'%')->first();
+                else
+                    $productTemplate = ProductTemplate::query()->where("urn",'like','%ready-2-use%')->first();
+
+                if($request->urn == "ready-2-use")
+                {
+                    $product = Product::query()->with(['productTemplate', 'thumbnailImage', "productCategory",
+                        "orders" => function ($q){
+                            $q->doesntExist();
+                        }])->withAvg("productRating","rating")->where("status", "1")->
+                        where("product_template_id",$productTemplate->id)->paginate(48);
+                }
+                else if($request->urn == "sold-ready-2-use")
+                {
+                    $product = Product::query()->with(['productTemplate', 'thumbnailImage', "productCategory",
+                        "orders" => function ($q){
+                            $q->exists();
+                        }])->withAvg("productRating","rating")->where("status", "1")->
+                    where("product_template_id",$productTemplate->id)->paginate(48);
+                }
+                else
+                {
+                    $product = Product::query()->with(['productTemplate', 'thumbnailImage', "productCategory"])
+                        ->withAvg("productRating","rating")->where("status", "1")->
+                        where("product_template_id",$productTemplate->id)->paginate(48);
+                }
+
                 return $this->apiSuccess("",$product);
             }
             else
@@ -114,6 +139,7 @@ class ProductController extends Controller
             'urn' => ['required','string']
         ]);
         try {
+
             $productTemplate = ProductTemplate::query()->
             where('urn','like','%'. $request->urn .'%')->
             with('productSubcategories')->first();
@@ -123,6 +149,11 @@ class ProductController extends Controller
             withAvg("productRating","rating")->
             where("status", "1")->where("product_template_id",$productTemplate->id)->paginate(48);
 
+            if($productTemplate->urn == "ready-2-use")
+            {
+                $productTemplate->productSubcategories = ProductSubcategory::query()->get();
+                $productTemplate->product_subcategories = ProductSubcategory::query()->get();
+            }
             return $this->apiSuccess("",["productTemplate" => $productTemplate, "product" => $product]);
         } catch (Exception $exception){
             return response()->json($exception->getMessage(), 500);

@@ -18,5 +18,7 @@ class ProductTemplateSeeder extends Seeder
             ['name' => 'Game', 'urn' => 'game-template']);
         ProductTemplate::query()->updateOrInsert(['name' => 'App', 'urn' => 'app-template'],
             ['name' => 'App', 'urn' => 'app-template']);
+        ProductTemplate::query()->updateOrInsert(['name' => 'Ready2Use', 'urn' => 'ready-use'],
+            ['name' => 'Ready2Use', 'urn' => 'ready-use']);
     }
 }
