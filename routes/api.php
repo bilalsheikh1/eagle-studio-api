@@ -94,7 +94,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post("get-products-status", [ProductController::class, "getProductsByStatus"]);
 
     //DOWNLOAD PRODUCT BY PRODUCT ID
-    Route::post("product-download",[FileController::class, "downloadFileByProductID"]);
+    Route::post("product-download/{product}",[FileController::class, "downloadFileByProductID"]);
 
     Route::post('get/approved-products/{product}',[ProductController::class,'approvedProduct']);
     Route::post('get-product/{product}',[ProductController::class,'getProduct']);
