@@ -24,14 +24,16 @@ class ProductController extends Controller
     {
         try {
             if( isset($request->urn)) {
-                if($request->urn != "sold-ready-2-use")
-                    $productTemplate = ProductTemplate::query()->where("urn",'like','%'. $request->urn .'%')->first();
-                else
+                if($request->urn == "sold-ready-2-use")
                     $productTemplate = ProductTemplate::query()->where("urn",'like','%ready-2-use%')->first();
+                else
+                    $productTemplate = ProductTemplate::query()->where("urn",'like','%'. $request->urn .'%')->first();
 
                 if($request->urn == "ready-2-use")
                 {
-                    $product = Product::query()->with(['productTemplate', 'thumbnailImage', "productCategory",
+                    $product = Product::query()->with(['productTemplate' => function($q){
+                        $q->where("urn","ready-2-use");
+                    }, 'thumbnailImage', "productCategory",
                         "orders" => function ($q){
                             $q->doesntExist();
                         }])->withAvg("productRating","rating")->where("status", "1")->
@@ -39,19 +41,14 @@ class ProductController extends Controller
                 }
                 else if($request->urn == "sold-ready-2-use")
                 {
-                    $product = Product::query()->with(['productTemplate', 'thumbnailImage', "productCategory",
+                    $product = Product::query()->with(['productTemplate' => function($q){
+                        $q->where("urn","ready-2-use");
+                    }, 'thumbnailImage', "productCategory",
                         "orders" => function ($q){
                             $q->exists();
                         }])->withAvg("productRating","rating")->where("status", "1")->
                     where("product_template_id",$productTemplate->id)->paginate(48);
                 }
-                else
-                {
-                    $product = Product::query()->with(['productTemplate', 'thumbnailImage', "productCategory"])
-                        ->withAvg("productRating","rating")->where("status", "1")->
-                        where("product_template_id",$productTemplate->id)->paginate(48);
-                }
-
                 return $this->apiSuccess("",$product);
             }
             else
@@ -71,6 +68,8 @@ class ProductController extends Controller
                 return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('status', '0')->where('user_id', $request->user()->id)->get());
             else if ($request->status == "live")
                 return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('status', '1')->where('user_id', $request->user()->id)->get());
+            else if ($request->status == "pending")
+                return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('status', '3')->where('user_id', $request->user()->id)->get());
             else if ($request->status == "all")
                 return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('user_id', $request->user()->id)->get());
         } catch (Exception $exception){
@@ -229,7 +228,7 @@ class ProductController extends Controller
             'operating_systems.*' => ['required', 'exists:operating_systems,id'],
             'framework' => ['required', 'exists:frameworks,id'],
             'features' => ['required'],
-//            'description' => ['required'],
+            'description' => ['required'],
         ]);
 
         try {
@@ -334,12 +333,12 @@ class ProductController extends Controller
                 $product->operatingSystems()->sync($request->operating_systems);
 
             if($request->step3) {
+                $product->status = 3;
                 if(!$product->file()->exists())
                     return response()->json("Product File required",422);
             }
 
             $product->fill($request->all());
-            $product->status = 1;
             $product->save();
             return response()->json($product);
         } catch (Exception $exception) {

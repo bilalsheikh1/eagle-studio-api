@@ -15,7 +15,7 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->boolean('status')->default(false);
+            $table->boolean('status')->default(false)->comment("status = 0 draft, status = 1 approved, status = 2 discard, status = 3 pending, status = 4 sales ended");
             $table->string('title')->unique();
             $table->text('description');
             $table->text('features');
