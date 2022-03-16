@@ -37,7 +37,7 @@ class ProductController extends Controller
                         "orders" => function ($q){
                             $q->doesntExist();
                         }])->withAvg("productRating","rating")->where("status", "1")->
-                        where("product_template_id",$productTemplate->id)->paginate(48);
+                       paginate(48);
                 }
                 else if($request->urn == "sold-ready-2-use")
                 {
@@ -47,7 +47,13 @@ class ProductController extends Controller
                         "orders" => function ($q){
                             $q->exists();
                         }])->withAvg("productRating","rating")->where("status", "1")->
-                    where("product_template_id",$productTemplate->id)->paginate(48);
+                    paginate(48);
+                }
+                else
+                {
+                    $product = Product::query()->with(['productTemplate', 'thumbnailImage', "productCategory"])
+                        ->withAvg("productRating","rating")->where("status", "1")->
+                        where("product_template_id",$productTemplate->id)->paginate(48);
                 }
                 return $this->apiSuccess("",$product);
             }
