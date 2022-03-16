@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Traits\ApiResponse;
 use App\Models\File;
 use App\Models\Product;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -33,21 +34,18 @@ class FileController extends Controller
         }
     }
 
-    public function downloadFileByProductID(Request $request)
+    public function downloadFileByProductID(Request $request, Product $product)
     {
-        $request->validate([
-           "id" => ["required", "exists:products,id"]
-        ]);
         try {
-            $product = Product::query()->with("file")->where("id", $id)->first();
+            $product->load('file');
             if ($product->file != null && $product->file != '') {
                 $path = storage_path('app/' . $product->file->path);
                 return $this->apiDownloadSuccess($path, $product->file->name);
             }
-            return;
         } catch (Exception $exception){
             return $this->apiFailed("",[],$exception->getMessage());
         }
+        return $this->apiFailed("",[], "Internal Server Error...");
     }
 
     /**
