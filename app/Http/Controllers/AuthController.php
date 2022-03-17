@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\ApiResponse;
 use App\Mail\SendPasswordMail;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
+    use ApiResponse;
 
     public function OTPGenerator($length_of_string)
     {
@@ -57,7 +59,7 @@ class AuthController extends Controller
 //            'email' => ['email', 'required', 'unique:users,email'],
 //            'password' => ['string', 'min:4', 'required']
         ]);
-//        try{
+        try{
             $passwordGenerate = $this->OTPGenerator(8);
             $user = User::query()->where("email", $request->email)->where("username", $request->username)->whereNull("email_verified_at")->first();
             if(!empty($user)) {
@@ -84,14 +86,12 @@ class AuthController extends Controller
                 $this->sendPasswordToMail($request->email, $passwordGenerate);
                 return response()->json("Password has been send to email");
             }
-
-
 //            if (Auth::attempt($request->only('username', 'password'))) {
 //                $token = $request->user()->createToken('auth_token')->plainTextToken;
 //            } else return response()->json('user not created', 500);
-//        } catch (\Exception $exception){
-//            return response()->json($exception->getMessage(), 500);
-//        }
+        } catch (\Exception $exception){
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 
     public function adminLogin(Request $request) :\Illuminate\Http\JsonResponse
@@ -124,6 +124,23 @@ class AuthController extends Controller
             return response()->json("User logout successfully.");
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 500);
+        }
+    }
+
+    public function forgetPassword(Request $request)
+    {
+        $request->validate([
+           "email" => ["required", "exists:users,email"]
+        ]);
+        try {
+            $user = User::query()->where("email",$request->email)->first();
+            $password =  $this->OTPGenerator(8);
+            $user->password =  Hash::make($password);
+            $user->save();
+            $this->sendPasswordToMail($request->email, $password);
+            return $this->apiSuccess("Password has been send to provided email");
+        } catch (Exception $exception){
+            return $this->apiFailed("",[],$exception->getMessage());
         }
     }
 

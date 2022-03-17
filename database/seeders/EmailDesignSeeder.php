@@ -15,7 +15,8 @@ class EmailDesignSeeder extends Seeder
     public function run()
     {
         $emailDesign = [
-            ["key" => "send_password_to_email", "value" => "test"]
+            ["key" => "send_password_to_email", "value" => "test"],
+            ["key" => "forget_password_to_email", "value" => "test"]
         ];
         EmailDesign::query()->upsert($emailDesign, ["key"], ["key"]);
     }

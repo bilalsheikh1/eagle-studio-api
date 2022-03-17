@@ -66,6 +66,7 @@ Route::post('/getProductByTitle', [ProductController::class, 'getProductByTitle'
 Route::get('sub-category', [ProductSubcategoryController::class, 'getSubcategories']);
 Route::get('user-detail/{user}', [UserController::class, "show"]);
 
+Route::post("forgetPassword", [AuthController::class,"forgetPassword"]);
 
 Route::middleware('auth:sanctum')->group(function () {
 
