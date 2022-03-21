@@ -27,9 +27,9 @@ class ThumbnailImageController extends Controller
      */
     public function upload(Product $product, Request $request): \Illuminate\Http\JsonResponse
     {
-//        $request->validate([
-//            'file' => ['required', 'dimensions:width=200,height=140']
-//        ]);
+        $request->validate([
+            'file' => ['required', 'dimensions:width=200,height=140']
+        ]);
         try {
             $product->thumbnailImage()->delete();
             $image = new ThumbnailImage();

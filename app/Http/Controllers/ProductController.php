@@ -216,8 +216,6 @@ class ProductController extends Controller
         }
     }
 
-//    public function
-
     /**
      * Store a newly created resource in storage.
      *
