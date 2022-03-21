@@ -68,6 +68,9 @@ Route::get('user-detail/{user}', [UserController::class, "show"]);
 
 Route::post("forgetPassword", [AuthController::class,"forgetPassword"]);
 
+Route::get("/license", [\App\Http\Controllers\LicenseController::class,"index"]);
+
+
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::resource('system-settings', \App\Http\Controllers\SystemSettingController::class);
@@ -177,6 +180,8 @@ Route::middleware('auth:sanctum')->prefix('admin')->name('admin.')->group(functi
     Route::resource("privacyPolicy", \App\Http\Controllers\PrivacyPolicyContorller::class);
     Route::resource("termsCondition", \App\Http\Controllers\TermsConditionController::class);
     Route::resource("sellYourApp", \App\Http\Controllers\SellYourAppController::class);
+    Route::get("/license", [\App\Http\Controllers\LicenseController::class,"index"]);
+    Route::put("/license", [\App\Http\Controllers\LicenseController::class,"update"]);
 
     //EAMIL DESIGN
     Route::resource("/email-design", \App\Http\Controllers\EmailDesignController::class);

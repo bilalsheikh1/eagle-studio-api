@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TermsConditionSeeder::class);
         $this->call(EmailDesignSeeder::class);
         $this->call(SellYourAppSeeder::class);
+        $this->call(LicenseSeeder::class);
     }
 }
