@@ -16,7 +16,8 @@ class UserSeeder extends Seeder
     public function run()
     {
         User::query()->upsert([
-            ['name' => 'bilal', "email" => "bilal@gmail.com", "username" => "bilal", "password" => Hash::make('bilal'),"is_admin" => 1 ,"active" => "1"]
+            ['name' => 'bilal', "email" => "bilal@gmail.com", "username" => "bilal", "password" => Hash::make('Bilal@123'),"is_admin" => 1 ,"active" => "1"],
+            ['name' => 'hassan', "email" => "hassansaleem@gmail.com", "username" => "hassan", "password" => Hash::make('Hassan@123'),"is_admin" => 1 ,"active" => "1"]
         ],['email', 'username'],['email', 'username']);
     }
 }
