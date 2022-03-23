@@ -61,7 +61,7 @@ class BecomeSellerController extends Controller
             $becomeSeller->save();
             $becomeSeller->productCategories()->sync($request->product_categories);
             $becomeSeller->framework()->sync($request->framework);
-            return response()->json("your become seller request has been farworded to admin");
+            return response()->json("Congrats you are now able to sale apps");
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 500);
         }
@@ -122,7 +122,7 @@ class BecomeSellerController extends Controller
             $becomeSeller->save();
             $becomeSeller->productCategories()->sync($request->product_categories);
             $becomeSeller->framework()->sync($request->framework);
-            return response()->json("your become seller request has been farworded to admin");
+            return response()->json("your data has been updated");
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 500);
         }

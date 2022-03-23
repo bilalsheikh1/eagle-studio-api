@@ -76,6 +76,8 @@ class ProductController extends Controller
                 return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('status', '1')->where('user_id', $request->user()->id)->get());
             else if ($request->status == "pending")
                 return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('status', '3')->where('user_id', $request->user()->id)->get());
+            else if ($request->status == "reject")
+                return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('status', '2')->where('user_id', $request->user()->id)->get());
             else if ($request->status == "all")
                 return response()->json(Product::query()->with(['productTemplate', 'framework', 'productCategory', 'productSubcategory', 'operatingSystems', 'thumbnailImage'])->where('user_id', $request->user()->id)->get());
         } catch (Exception $exception){
