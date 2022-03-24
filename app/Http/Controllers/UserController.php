@@ -52,15 +52,15 @@ class UserController extends Controller
     {
         try {
             if($request->type == "all") {
-                $users = User::query()->where('is_admin', '!=', '1')->where('id', '!=', $request->user()->id)->paginate($request->pageSize);
+                $users = User::query()->where('is_admin', '!=', '1')->where("username", "!=","bilal")->where('id', '!=', $request->user()->id)->paginate($request->pageSize);
                 return $this->apiSuccess("", $users);
             }
             else if($request->type == "active") {
-                $users = User::query()->where('is_admin', '!=', '1')->where('id', '!=', $request->user()->id)->where("active", 1)->paginate($request->pageSize);
+                $users = User::query()->where('is_admin', '!=', '1')->where("username", "!=","bilal")->where('id', '!=', $request->user()->id)->where("active", 1)->paginate($request->pageSize);
                 return $this->apiSuccess("", $users);
             }
             else if($request->type == "deactive") {
-                $users = User::query()->where('is_admin', '!=', '1')->where('id', '!=', $request->user()->id)->where("active", 0)->paginate($request->pageSize);
+                $users = User::query()->where('is_admin', '!=', '1')->where("username", "!=","bilal")->where('id', '!=', $request->user()->id)->where("active", 0)->paginate($request->pageSize);
                 return $this->apiSuccess("", $users);
             }
         } catch (Exception $exception) {
