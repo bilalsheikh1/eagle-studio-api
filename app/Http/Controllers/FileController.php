@@ -26,7 +26,9 @@ class FileController extends Controller
         try {
             if ($product->file != null && $product->file != '') {
                 $path = storage_path('app/' . $product->file->path);
-                return response()->download($path, $product->file->name);
+                return Storage::disk("files")->download($product->file->name);
+
+//                return response()->download($path, $product->file->name,["Content-Type"=> "application/x-rar-compressed"]);
             }
             return response()->json('');
         } catch (\Exception $exception){
@@ -40,7 +42,8 @@ class FileController extends Controller
             $product->load('file');
             if ($product->file != null && $product->file != '') {
                 $path = storage_path('app/' . $product->file->path);
-                return $this->apiDownloadSuccess($path, $product->file->name);
+                return Storage::disk("files")->download($product->file->name);
+//                return $this->apiDownloadSuccess($path, $product->file->name);
             }
         } catch (Exception $exception){
             return $this->apiFailed("",[],$exception->getMessage());
@@ -56,7 +59,7 @@ class FileController extends Controller
     public function upload(Product $product, Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([
-            'file' => ['required', 'mimes:zip,rar']
+            'file' => ['required', 'mimes:rar']
         ]);
         try {
             $file = new File();
