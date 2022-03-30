@@ -30,7 +30,7 @@ class FileController extends Controller
 
 //                return response()->download($path, $product->file->name,["Content-Type"=> "application/x-rar-compressed"]);
             }
-            return response()->json('');
+            return response()->json('Invalid file name or file not found.', 500);
         } catch (\Exception $exception){
             return response()->json($exception->getMessage(), 500);
         }
