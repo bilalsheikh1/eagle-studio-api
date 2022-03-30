@@ -18,7 +18,7 @@ trait ApiResponse
 
     public function apiDownloadSuccess($path,$file)
     {
-        return response()->download($path,$file);
+        return response()->download($path,$file,["Content-Type"=> "application/x-www-form-urlencoded"]);
     }
 
     public function apiFailed($message = "", $data = [], $errMess = "", $status = false, $statusCode = 500)

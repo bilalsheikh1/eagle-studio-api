@@ -392,22 +392,12 @@ class ProductController extends Controller
     public function getProductsViews(Request $request)
     {
         try {
-//            $product = Product::query()->with(["views" => function ($q) use ($request){
-//                $q->where("created_at", Carbon::now()->subYear());
-//            }])->get();
-//            $viewsType = Carbon::now()->subYear();
-//            if(isset($request->viewsType))
-//            {
-//                if($request->viewsType == "month")
-//                    $viewsType = Carbon::now()->month();
-//                if($request->viewsType == "daily")
-//                    $viewsType = Carbon::now();
-//            }
-//            $data = DB::select("SELECT * FROM (SELECT COUNT(pv.views) , p.title, CONCAT(MONTHNAME(pv.`created_at`), ' ' ,YEAR(pv.`created_at`)) FROM `products` p JOIN `product_views` pv ON (p.`id` = pv.`product_id`) WHERE pv.`created_at` >= {$viewsType}  AND p.`user_id` = {$request->user()->id} GROUP BY YEAR(pv.`created_at`)) AS a ");
             $condition = "1";
             if(isset($request->product_id))
                 $condition = "and product_id = {$request->product_id}";
-            $data = DB::select("SELECT CONVERT(DAY(demo.d), NCHAR) AS date, IF(virtual.views, virtual.views, 0) AS views FROM (SELECT  DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH)) + INTERVAL t.n - 1 DAY AS d, t.n AS n FROM tally t) AS  demo LEFT JOIN (SELECT COUNT(pv.views) AS views,DATE(pv.created_at) AS DATE FROM `products` p JOIN `product_views` pv ON (p.`id` = pv.`product_id`) WHERE pv.`created_at` >= DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH)) AND 1 AND p.`user_id` = 3 GROUP BY DATE(pv.`created_at`)) AS virtual ON (demo.d = DATE(virtual.date)) WHERE demo.n <= DATEDIFF(DATE(DATE_SUB(NOW(), INTERVAL 2 DAY)), DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH))) + 1 ORDER BY demo.d");
+            $data = DB::select("SELECT 'views' AS category,CONVERT(DAY(demo.d), NCHAR) AS date, IF(virtual.views, virtual.views, 0) AS total FROM (SELECT  DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH)) + INTERVAL t.n - 1 DAY AS d, t.n AS n FROM tally t) AS  demo LEFT JOIN (SELECT COUNT(pv.views) AS views,DATE(pv.created_at) AS DATE FROM `products` p JOIN `product_views` pv ON (p.`id` = pv.`product_id`) WHERE pv.`created_at` >= DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH)) AND 1 AND p.`user_id` = 3 GROUP BY DATE(pv.`created_at`)) AS virtual ON (demo.d = DATE(virtual.date)) WHERE demo.n <= DATEDIFF(DATE(DATE_SUB(NOW(), INTERVAL 2 DAY)), DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH))) + 1 ORDER BY demo.d");
+            $sale = DB::select("SELECT total, 'earning' AS category, CONVERT(DAY(`created_at`), NCHAR) AS date FROM orders WHERE  created_at > NOW() - INTERVAL 1 MONTH AND user_id = {$request->user()->id}");
+            $data = array_merge($data, $sale);
             return $this->apiSuccess("",$data);
         } catch (Exception $exception){
             return $this->apiFailed("",[],$exception->getMessage());

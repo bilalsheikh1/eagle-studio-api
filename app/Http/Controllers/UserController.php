@@ -228,11 +228,9 @@ class UserController extends Controller
             'password' => ['required', 'min:3', 'confirmed']
         ]);
         try{
-//            $user = new User();
             $user->name = $request->name;
             $user->email = $request->email;
             $user->username = $request->username;
-//            $user->password = Hash::make($request->password);
             $user->update();
             return response()->json("user {$user->username} has been updated");
         }catch (\Exception $exception){
