@@ -238,5 +238,3 @@ Route::middleware('auth:sanctum')->prefix('admin')->name('admin.')->group(functi
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 });
-Route::post('/admin/{product}/files', [FileController::class, 'downloadFile']);
-

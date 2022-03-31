@@ -25,10 +25,7 @@ class FileController extends Controller
     {
         try {
             if ($product->file != null && $product->file != '') {
-                $path = storage_path('app/' . $product->file->path);
                 return Storage::disk("files")->download($product->file->name);
-
-//                return response()->download($path, $product->file->name,["Content-Type"=> "application/x-rar-compressed"]);
             }
             return response()->json('Invalid file name or file not found.', 500);
         } catch (\Exception $exception){
@@ -39,16 +36,13 @@ class FileController extends Controller
     public function downloadFileByProductID(Request $request, Product $product)
     {
         try {
-            $product->load('file');
             if ($product->file != null && $product->file != '') {
-                $path = storage_path('app/' . $product->file->path);
                 return Storage::disk("files")->download($product->file->name);
-//                return $this->apiDownloadSuccess($path, $product->file->name);
             }
+            return response()->json('Invalid file name or file not found.', 500);
         } catch (Exception $exception){
             return $this->apiFailed("",[],$exception->getMessage());
         }
-        return $this->apiFailed("",[], "Internal Server Error...");
     }
 
     /**
