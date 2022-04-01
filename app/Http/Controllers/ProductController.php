@@ -395,12 +395,22 @@ class ProductController extends Controller
             $condition = "1";
             if(isset($request->product_id))
                 $condition = "and product_id = {$request->product_id}";
-            $data = DB::select("SELECT 'views' AS category,CONVERT(DAY(demo.d), NCHAR) AS date, IF(virtual.views, virtual.views, 0) AS total FROM (SELECT  DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH)) + INTERVAL t.n - 1 DAY AS d, t.n AS n FROM tally t) AS  demo LEFT JOIN (SELECT COUNT(pv.views) AS views,DATE(pv.created_at) AS DATE FROM `products` p JOIN `product_views` pv ON (p.`id` = pv.`product_id`) WHERE pv.`created_at` >= DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH)) AND 1 AND p.`user_id` = 3 GROUP BY DATE(pv.`created_at`)) AS virtual ON (demo.d = DATE(virtual.date)) WHERE demo.n <= DATEDIFF(DATE(DATE_SUB(NOW(), INTERVAL 2 DAY)), DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH))) + 1 ORDER BY demo.d");
-            $sale = DB::select("SELECT total, 'earning' AS category, CONVERT(DAY(`created_at`), NCHAR) AS date FROM orders WHERE  created_at > NOW() - INTERVAL 1 MONTH AND user_id = {$request->user()->id}");
+            $data = DB::select("SELECT 'views' AS category,CONVERT(DAY(demo.d), NCHAR) AS date, IF(virtual.views, virtual.views, 0) AS total FROM (SELECT  DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH)) + INTERVAL t.n - 1 DAY AS d, t.n AS n FROM tally t) AS  demo LEFT JOIN (SELECT COUNT(pv.views) AS views,DATE(pv.created_at) AS DATE FROM `products` p JOIN `product_views` pv ON (p.`id` = pv.`product_id`) WHERE pv.`created_at` >= DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH)) AND 1 AND p.`user_id` = {$request->user()->id} GROUP BY DATE(pv.`created_at`)) AS virtual ON (demo.d = DATE(virtual.date)) WHERE demo.n <= DATEDIFF(DATE(DATE_SUB(NOW(), INTERVAL 2 DAY)), DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH))) + 1 ORDER BY demo.d");
+            $sale = DB::select("SELECT 'earning' AS category, IF(CONVERT(DAY(`created_at`), NCHAR), CONVERT(DAY(`created_at`), NCHAR), CONVERT(DAY(o.d), NCHAR)) AS date, IF(total,total,0) AS total FROM (SELECT  DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH)) + INTERVAL t.n - 1 DAY AS d, t.n AS n FROM tally t) AS o LEFT JOIN (SELECT * FROM orders WHERE  created_at > NOW() - INTERVAL 1 MONTH AND user_id = {$request->user()->id}) AS orders ON (o.d = DATE(orders.`created_at`))WHERE o.n <= DATEDIFF(DATE(DATE_SUB(NOW(), INTERVAL 2 DAY)), DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH))) + 1 ORDER BY o.d");
             $data = array_merge($data, $sale);
             return $this->apiSuccess("",$data);
         } catch (Exception $exception){
             return $this->apiFailed("",[],$exception->getMessage());
+        }
+    }
+
+    public function getLast5Products(Request $request)
+    {
+        try {
+            $products = Product::query()->where("user_id", $request->user()->id)->limit(5);
+            return $this->apiSuccess("",$products);
+        } catch (\Exception $exception){
+            return $this->apiFailed($exception->getMessage());
         }
     }
 
