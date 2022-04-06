@@ -92,7 +92,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get("/get-earnings",[ProductController::class, "getProductsViews"]);
 
     //GET LAST 5 PRODUCTS
-    Route::post("/last-5-product", [ProductController::class, ""]);
+    Route::post("/last-5-product", [ProductController::class, "getLast5Products"]);
 
     //GET COMMENT
     Route::get("/fetch-messages", [CommentController::class, "fetchCommandsByUser"]);
