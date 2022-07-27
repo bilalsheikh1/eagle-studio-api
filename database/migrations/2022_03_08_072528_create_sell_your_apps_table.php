@@ -15,7 +15,7 @@ class CreateSellYourAppsTable extends Migration
     {
         Schema::create('sell_your_apps', function (Blueprint $table) {
             $table->id();
-            $table->string("data");
+            $table->text("data");
             $table->timestamps();
         });
     }

@@ -31,6 +31,7 @@ class SendPasswordMail extends Mailable
     public function build()
     {
         $mailData = EmailDesign::query()->where("key", "send_password_to_email")->first();
-        return $this->view('email.sendPasswordEmail')->with(["data" => $mailData->value, "password" => $this->password]);
+        $value= str_replace('[thispassword]',$this->password,$mailData->value);
+        return $this->view('email.sendPasswordEmail')->with(["data" => $value, "password" => $this->password]);
     }
 }

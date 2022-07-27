@@ -28,11 +28,11 @@ class FeaturedImageController extends Controller
      */
     public function upload(Product $product, Request $request): \Illuminate\Http\JsonResponse
     {
-        $request->validate([
-            'file' => ['required', 'dimensions:width=650,height=290']
-        ]);
+//        $request->validate([
+//            'file' => ['required', 'dimensions:width=650,height=290']
+//        ]);
         try {
-            $product->featuredImage()->delete();
+//            $product->featuredImage()->delete();
             $image = new FeaturedImage;
             $image->name = $request->file('file')->getClientOriginalName();
             $image->path = $request->file('file')->storeAs('featured_images', $image->name, 'public');

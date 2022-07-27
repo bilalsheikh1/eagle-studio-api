@@ -21,9 +21,9 @@ class CommentController extends Controller
      */
     public function index(Product $product)
     {
-        $data=$product->with(['comments' => function($q){
+        $data=$product->where('id',$product->id )->with(['comments' => function($q){
             $q->where('parent_id', 0);
-        },'comments.children','comments.children.user','comments.user:id,username'])->get()->pluck('comments');
+        },'comments.children','comments.children.user','comments.user:id,username'])->get()->pluck("comments");
         if(count($data) > 0)
             return response()->json($data[0]);
         return response()->json([]);
@@ -32,7 +32,7 @@ class CommentController extends Controller
     public function getCommentByProductID(Product $product)
     {
         try {
-            $data = $product->with(['comments' => function ($q) {
+            $data = $product->where('id', $product->id)->with(['comments' => function ($q) {
                 $q->where('parent_id', 0);
             }, 'comments.children', 'comments.children.user', 'comments.user:id,username',"thumbnailImage", "productCategory"])
                 ->withAvg("productRating","rating")->get();
@@ -72,9 +72,10 @@ class CommentController extends Controller
             $comment->user()->associate($request->user()->id);
             $comment->productOwnerUserIDInComment()->associate($product->user_id);
             $comment->save();
-            $data=$product->with(['comments' => function($q){
+            $data=$product->where('id',$product->id)->with(['comments' => function($q){
                 $q->where('parent_id', 0);
             },'comments.children','comments.children.user','comments.user:id,username'])->get()->pluck('comments');
+
             if(count($data) > 0)
                 return response()->json($data[0]);
             return response()->json([]);
