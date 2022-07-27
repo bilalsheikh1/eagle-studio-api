@@ -96,7 +96,7 @@ class CommentController extends Controller
             $comment->user()->associate($request->user()->id);
             $comment->productOwnerUserIDInComment()->associate($product->user_id);
             $product->comments()->save($comment);
-            $data=$product->with(['comments' => function($q){
+            $data=$product->where('id',$product->id)->with(['comments' => function($q){
                 $q->where('parent_id', 0);
             },'comments.children','comments.children.user','comments.user:id,username'])->get()->pluck('comments');
             if(count($data) > 0)
